@@ -34,7 +34,7 @@ namespace Hs.Core.Money
 
         internal static void EnsureCurrencyTable()
         {
-            if (Currencies is null)
+            if (_currencies is null)
             {
                 InitCurrencyTable();
             }

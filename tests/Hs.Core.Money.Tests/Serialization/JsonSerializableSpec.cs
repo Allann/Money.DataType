@@ -30,12 +30,12 @@ namespace Hs.Core.Money.Serialization.Tests
 
         public class GivenIWantToDeserializeAmountWithJsonSerializer
         {
-            private static string CurrentCultureCode = new RegionInfo(CultureInfo.CurrentCulture.LCID).ISOCurrencySymbol;
+            private static readonly string _currentCultureCode = new RegionInfo(CultureInfo.CurrentCulture.LCID).ISOCurrencySymbol;
 
             public static IEnumerable<object[]> ValidJsonData => new[]
             {
-                new object[] { $"{{ \"value\": 200, \"currency\": \"{CurrentCultureCode}\" }}" },
-                new object[] { $"{{ \"currency\": \"{CurrentCultureCode}\", \"value\": 200 }}" },
+                new object[] { $"{{ \"value\": 200, \"currency\": \"{_currentCultureCode}\" }}" },
+                new object[] { $"{{ \"currency\": \"{_currentCultureCode}\", \"value\": 200 }}" },
             };
 
             public static IEnumerable<object[]> InvalidJsonData => new[]
@@ -46,18 +46,18 @@ namespace Hs.Core.Money.Serialization.Tests
 
             public static IEnumerable<object[]> ValidNestedJsonData => new[]
             {
-                new object[] { $"{{ cash: {{ value: '200', currency: '{CurrentCultureCode}' }} }}", },
-                new object[] { $"{{ cash: {{ value: 200, currency: '{CurrentCultureCode}' }} }}" },
-                new object[] { $"{{ cash: {{ currency: '{CurrentCultureCode}', value: 200 }} }}" },
-                new object[] { $"{{ cash: {{ currency: '{CurrentCultureCode}', value: '200' }} }}" }
+                new object[] { $"{{ cash: {{ value: '200', currency: '{_currentCultureCode}' }} }}", },
+                new object[] { $"{{ cash: {{ value: 200, currency: '{_currentCultureCode}' }} }}" },
+                new object[] { $"{{ cash: {{ currency: '{_currentCultureCode}', value: 200 }} }}" },
+                new object[] { $"{{ cash: {{ currency: '{_currentCultureCode}', value: '200' }} }}" }
             };
 
             public static IEnumerable<object[]> ValidNestedNullableJsonData => new[]
             {
-                new object[] { $"{{ cash: {{ value: '200', currency: '{CurrentCultureCode}' }} }}", },
-                new object[] { $"{{ cash: {{ value: 200, currency: '{CurrentCultureCode}' }} }}" },
-                new object[] { $"{{ cash: {{ currency: '{CurrentCultureCode}', value: 200 }} }}" },
-                new object[] { $"{{ cash: {{ currency: '{CurrentCultureCode}', value: '200' }} }}" },
+                new object[] { $"{{ cash: {{ value: '200', currency: '{_currentCultureCode}' }} }}", },
+                new object[] { $"{{ cash: {{ value: 200, currency: '{_currentCultureCode}' }} }}" },
+                new object[] { $"{{ cash: {{ currency: '{_currentCultureCode}', value: 200 }} }}" },
+                new object[] { $"{{ cash: {{ currency: '{_currentCultureCode}', value: '200' }} }}" },
                 new object[] { $"{{ cash: null }}" },
             };
 
@@ -65,7 +65,7 @@ namespace Hs.Core.Money.Serialization.Tests
             [MemberData(nameof(ValidJsonData))]
             public void WhenDeserializingWithValidJson_ThenThisShouldSucceed(string json)
             {
-                var money = new Amount(200, Currency.FromCode(CurrentCultureCode));
+                var money = new Amount(200, Currency.FromCode(_currentCultureCode));
 
                 var clone = json.FromJson<Amount>();
 
@@ -89,7 +89,7 @@ namespace Hs.Core.Money.Serialization.Tests
             [MemberData(nameof(ValidNestedJsonData))]
             public void WhenDeserializingWithNested_ThenThisShouldSucceed(string json)
             {
-                var money = new Amount(200, Currency.FromCode(CurrentCultureCode));
+                var money = new Amount(200, Currency.FromCode(_currentCultureCode));
 
                 var clone = json.FromJson<TypeWithMoneyProperty>();
 
@@ -105,7 +105,7 @@ namespace Hs.Core.Money.Serialization.Tests
             [MemberData(nameof(ValidNestedNullableJsonData))]
             public void WhenDeserializingWithNestedNullable_ThenThisShouldSucceed(string json)
             {
-                var money = new Amount(200, Currency.FromCode(CurrentCultureCode));
+                var money = new Amount(200, Currency.FromCode(_currentCultureCode));
 
                 var clone = json.FromJson<TypeWithNullableMoneyProperty>();
 
