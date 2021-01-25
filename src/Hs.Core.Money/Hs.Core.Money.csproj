@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyTitle>Hs.Core.Money</AssemblyTitle>
+    <AssemblyName>Hs.Core.Money</AssemblyName>
+    <Description>Hs.Core.Money provides a library that treats Money as a first class citizen and handles all the ugly bits like currencies and formatting.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Hs.Core.Money</PackageId>
+    <PackageTags>Money;Currency;ExchangeRate</PackageTags>
+      <Nullable>Enable</Nullable>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <Authors>Allan Nielsen</Authors>
+      <Company>Hybrid Solution</Company>
+      <Product>Hs.Core.Money</Product>
+      <Copyright>Copyright © 2020  All rights reserved</Copyright>
+      <RepositoryType>Git</RepositoryType>
+      <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+ 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>
