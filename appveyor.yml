@@ -15,6 +15,7 @@ nuget:
 before_build:
 - cmd: >-
     dotnet --version
+    
     dotnet restore ./Hs.Core.Money.sln
 build:
   project: ./Hs.Core.Money.sln
