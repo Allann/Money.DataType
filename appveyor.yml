@@ -15,9 +15,9 @@ nuget:
 before_build:
 - cmd: >-
     dotnet --version
-    dotnet restore ./Money.DataType.sln
+    dotnet restore ./Hs.Core.Money.sln
 build:
-  project: ./Money.DataType.sln
+  project: ./Hs.Core.Money.sln
   publish_nuget: true
   publish_nuget_symbols: true
   use_snupkg_format: true
