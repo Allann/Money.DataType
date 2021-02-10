@@ -70,12 +70,9 @@ namespace Hs.Core.Money
                 throw new ArgumentNullException(nameof(@namespace));
             }
 
-            if (!Currency.Registry.TryRemove(code, @namespace, out var currency))
-            {
-                throw new ArgumentException($"code {code} specifies a currency that is not found in the namespace {@namespace}.");
-            }
-
-            return currency;
+            return !Currency.Registry.TryRemove(code, @namespace, out var currency)
+                ? throw new ArgumentException($"code {code} specifies a currency that is not found in the {nameof(@namespace)} {@namespace}.")
+                : currency;
         }
 
         /// <summary>Builds the current <see cref="CurrencyBuilder"/> object as a custom currency.</summary>
@@ -83,7 +80,6 @@ namespace Hs.Core.Money
         /// <exception cref="InvalidOperationException">The current CurrencyBuilder object has a property that must be set before the currency can be registered.</exception>
         public Currency Build()
         {
-            // throw new InvalidOperationException("The current CurrencyBuilder object has a property that must be set before the currency can be registered.");
             if (string.IsNullOrWhiteSpace(Symbol))
             {
                 Symbol = Currency.GenericCurrencySign;
@@ -102,12 +98,9 @@ namespace Hs.Core.Money
         public Currency Register()
         {
             var currency = Build();
-            if (!Currency.Registry.TryAdd(Code, Namespace, currency))
-            {
-                throw new InvalidOperationException("The custom currency is already registered.");
-            }
-
-            return currency;
+            return !Currency.Registry.TryAdd(Code, Namespace, currency)
+                ? throw new InvalidOperationException("The custom currency is already registered.")
+                : currency;
         }
 
         /// <summary>Sets the properties of the current <see cref="CurrencyBuilder"/> object with the corresponding properties of

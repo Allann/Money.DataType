@@ -219,18 +219,18 @@ namespace Hs.Core.Money.Tests.ExchangeRateSpec
 
     public class GivenIWantToConvertExchangeRateToString
     {
-        ExchangeRate fx = new(Currency.FromCode("EUR"), Currency.FromCode("USD"), 1.2524);
+        readonly ExchangeRate _fx = new(Currency.FromCode("EUR"), Currency.FromCode("USD"), 1.2524);
 
         [Fact, UseCulture("en-US")]
         public void WhenShowingExchangeRateInAmerica_ThenReturnCurrencyPairWithDot()
         {
-            fx.ToString().Should().Be("EUR/USD 1.2524");
+            _fx.ToString().Should().Be("EUR/USD 1.2524");
         }
 
         [Fact, UseCulture("nl-NL")]
         public void WhenShowingExchangeRateInNetherlands_ThenReturnCurrencyPairWithComma()
         {
-            fx.ToString().Should().Be("EUR/USD 1,2524");
+            _fx.ToString().Should().Be("EUR/USD 1,2524");
         }
     }
 

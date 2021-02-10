@@ -21,7 +21,7 @@ namespace Hs.Core.Money
         internal const double NotApplicable = -1;
 
         private static readonly object _obj = new();
-        private static IList<Currency>? _currencies = null;
+        private static IList<Currency>? _currencies;
 
         internal static IEnumerable<Currency>? Currencies 
         {

@@ -156,7 +156,7 @@ namespace Hs.Core.Money.Tests.CurrencyBuilderSpec
         [Fact]
         public void WhenUnregisterIsoCurrency_ThenThisMustSucceed()
         {
-            var euro = Currency.FromCode("PEN"); // should work
+            _ = Currency.FromCode("PEN"); // should work
 
             CurrencyBuilder.Unregister("PEN", "ISO-4217");
             Action action = () => Currency.FromCode("PEN");
@@ -176,7 +176,7 @@ namespace Hs.Core.Money.Tests.CurrencyBuilderSpec
             };
 
             builder.Register();
-            var xyz = Currency.FromCode("XYZ", "virtual"); // should work
+            _ = Currency.FromCode("XYZ", "virtual"); // should work
 
             CurrencyBuilder.Unregister("XYZ", "virtual");
             Action action = () => Currency.FromCode("XYZ", "virtual");

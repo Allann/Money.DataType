@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hs.Core.Money.Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -26,7 +27,7 @@ namespace Hs.Core.Money
 
         /// <summary>Gets the currency sign (¤), a character used to denote the generic currency sign, when no currency sign is available.</summary>
         /// <remarks>https://en.wikipedia.org/wiki/Currency_sign_(typography).</remarks>
-        public const string GenericCurrencySign = "¤";
+        public static string GenericCurrencySign => "¤";
 
         /// <summary>A singleton instance of the currencies registry.</summary>
         [NonSerialized]
@@ -101,7 +102,6 @@ namespace Hs.Core.Money
                     : FromCode(RegionInfo.CurrentRegion.ISOCurrencySymbol, DefaultNamespace);
             }
         }
-            //=> FromRegion(RegionInfo.CurrentRegion);
 
         /// <summary>Gets the currency symbol.</summary>
         public string? Symbol { get; }
@@ -273,7 +273,7 @@ namespace Hs.Core.Money
         {
             return Code == other.Code
                 && Namespace == other.Namespace
-                && DecimalDigits == other.DecimalDigits
+                && DecimalDigits.IsApproximatelyEqualTo(other.DecimalDigits, .0000001)
                 && EnglishName == other.EnglishName
                 && MajorUnit == other.MajorUnit
                 && MinorUnit == other.MinorUnit

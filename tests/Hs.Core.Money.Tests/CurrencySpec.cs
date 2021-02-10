@@ -331,7 +331,7 @@ namespace Hs.Core.Money.Tests.CurrencySpec
         [Fact]
         public void WhenCodeIsNull_ThenCreatingShouldThrow()
         {
-            Action action = () => { var eur = new Currency(null, "978", 2, "Euro", "€"); };
+            Action action = () => { _ = new Currency(null, "978", 2, "Euro", "€"); };
 
             action.Should().Throw<ArgumentException>();
         }
@@ -363,7 +363,7 @@ namespace Hs.Core.Money.Tests.CurrencySpec
         [Fact]
         public void WhenDecimalDigitIsLowerThenMinusOne_ThenCreatingShouldThrow()
         {
-            Action action = () => { var eur = new Currency("EUR", "978", -2, "Euro", "€"); };
+            Action action = () => { _ = new Currency("EUR", "978", -2, "Euro", "€"); };
 
             action.Should().Throw<ArgumentOutOfRangeException>();
         }
@@ -506,8 +506,8 @@ namespace Hs.Core.Money.Tests.CurrencySpec
 
     public class GivenIWantToCompareCurrenciesToIsoXML
     {
-        private IEnumerable<Currency> _definedCurrencies;
-        private IEnumerable<IsoCurrency> _isoCurrencies;
+        private readonly IEnumerable<Currency> _definedCurrencies;
+        private readonly IEnumerable<IsoCurrency> _isoCurrencies;
 
         private const string FilePath = @"..\..\iso.xml";
         private bool FileFound { get; set; }

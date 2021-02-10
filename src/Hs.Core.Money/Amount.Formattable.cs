@@ -111,6 +111,8 @@ namespace Hs.Core.Money
                 case 7: // n$-
                     numberFormatInfo.CurrencyNegativePattern = 10; // n $-
                     break;
+                default:
+                    break;
             }
 
             return numberFormatInfo;

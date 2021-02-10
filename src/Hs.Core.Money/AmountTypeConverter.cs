@@ -13,12 +13,7 @@ namespace Hs.Core.Money
         /// <param name="sourceType">A <see cref="Type" /> that represents the type you want to convert from. </param>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string))
-            {
-                return true;
-            }
-
-            return base.CanConvertFrom(context, sourceType);
+            return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
         }
 
         /// <summary>Returns whether this converter can convert the object to the specified type, using the specified context.</summary>
@@ -27,12 +22,7 @@ namespace Hs.Core.Money
         /// <param name="destinationType">A <see cref="Type" /> that represents the type you want to convert to. </param>
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            if (destinationType == typeof(Amount))
-            {
-                return true;
-            }
-
-            return base.CanConvertTo(context, destinationType);
+            return destinationType == typeof(Amount) || base.CanConvertTo(context, destinationType);
         }
 
         /// <summary>Converts the given object to the type of this converter, using the specified context and culture information.</summary>
@@ -45,7 +35,7 @@ namespace Hs.Core.Money
         {
             if (value is string valueAsString)
             {
-                var v = valueAsString.Split(new char[] { ' ' });
+                var v = valueAsString.Split(new[] { ' ' });
                 return new Amount(decimal.Parse(v[0], culture), v[1]);
             }
 
@@ -62,14 +52,9 @@ namespace Hs.Core.Money
         /// <exception cref="NotSupportedException">The conversion cannot be performed. </exception>
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(string))
-            {
-                return ((Amount)value).Value + " " + ((Amount)value).Currency.Code;
-            }
-
-            return base.ConvertTo(context, culture, value, destinationType);
+            return destinationType == typeof(string)
+                ? ((Amount)value).Value + " " + ((Amount)value).Currency.Code
+                : base.ConvertTo(context, culture, value, destinationType);
         }
-
-        // IsValid(ITypeDescriptorContext, Object)
     }
 }

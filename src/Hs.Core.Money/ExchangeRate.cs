@@ -203,13 +203,8 @@ namespace Hs.Core.Money
 
         /// <summary>Returns the hash code for this instance.</summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return Value.GetHashCode() + (397 * BaseCurrency.GetHashCode()) + (397 * QuoteCurrency.GetHashCode());
-            }
-        }
+        public override int GetHashCode() 
+            => Value.GetHashCode() + 397 * BaseCurrency.GetHashCode() + 397 * QuoteCurrency.GetHashCode();
 
         /// <summary>Indicates whether this instance and a specified <see cref="ExchangeRate"/> are equal.</summary>
         /// <param name="other">Another object to compare to.</param>
@@ -222,11 +217,13 @@ namespace Hs.Core.Money
         /// <param name="obj">Another object to compare to.</param>
         /// <returns>true if <paramref name="obj"/> and this instance are the same type and represent the same value; otherwise,
         /// false.</returns>
-        public override bool Equals(object? obj) => obj is ExchangeRate fx && Equals(fx);
+        public override bool Equals(object? obj) 
+            => obj is ExchangeRate fx && Equals(fx);
 
         /// <summary>Converts this <see cref="ExchangeRate"/> instance to its equivalent <see cref="string"/> representation.</summary>
         /// <returns>A string that represents this <see cref="ExchangeRate"/> instance.</returns>
         /// <remarks>See http://en.wikipedia.org/wiki/Currency_Pair for more info about how an ExchangeRate can be presented.</remarks>
-        public override string ToString() => $"{BaseCurrency.Code}/{QuoteCurrency.Code} {Value}";
+        public override string ToString() 
+            => $"{BaseCurrency.Code}/{QuoteCurrency.Code} {Value}";
     }
 }

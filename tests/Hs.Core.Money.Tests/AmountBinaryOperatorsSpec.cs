@@ -167,7 +167,7 @@ namespace Hs.Core.Money.Tests.AmountBinaryOperatorsSpec
             var money1 = new Amount(value1, "EUR");
             var money2 = new Amount(value2, "USD");
 
-            Action action = () => { var result = money1 - money2; };
+            Action action = () => { _ = money1 - money2; };
 
             action.Should().Throw<InvalidCurrencyException>().WithMessage("The requested operation expected the currency*");
         }

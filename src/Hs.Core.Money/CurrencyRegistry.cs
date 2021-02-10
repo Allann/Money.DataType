@@ -7,15 +7,12 @@ namespace Hs.Core.Money
     /// <summary>Represent the central thread-safe registry for currencies.</summary>
     internal class CurrencyRegistry
     {
-        private static readonly Dictionary<string, byte> Namespaces;
-        private static readonly Dictionary<string, Currency> Currencies;
+        private static readonly Dictionary<string, byte> Namespaces = new Dictionary<string, byte> { ["ISO-4217"] = default, ["ISO-4217-HISTORIC"] = default };
+        private static readonly Dictionary<string, Currency> Currencies = new Dictionary<string, Currency>((DefaultCurrencies.Currencies ?? new List<Currency>()).ToDictionary(k => k.Namespace + "::" + k.Code));
 
         static CurrencyRegistry()
         {
             DefaultCurrencies.EnsureCurrencyTable();
-            Namespaces = new Dictionary<string, byte> { ["ISO-4217"] = default, ["ISO-4217-HISTORIC"] = default };
-            var cs = DefaultCurrencies.Currencies ?? new List<Currency>();
-            Currencies = new Dictionary<string, Currency>(cs.ToDictionary(k => k.Namespace + "::" + k.Code));
         }
 
         /// <summary>Tries the get <see cref="Currency"/> of the given code and namespace.</summary>

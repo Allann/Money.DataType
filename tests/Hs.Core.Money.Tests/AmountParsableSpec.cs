@@ -204,7 +204,7 @@ namespace Hs.Core.Money.Tests.AmountParsableSpec
         {
             Action action = () => Amount.Parse("€ 765,43", Currency.FromCode("USD"));
 
-            action.Should().Throw<FormatException>(); //.WithMessage("Input string was not in a correct format.");                
+            action.Should().Throw<FormatException>().WithMessage("Input string was not in a correct format.");                
         }
 
         [Fact, UseCulture("nl-NL")]
