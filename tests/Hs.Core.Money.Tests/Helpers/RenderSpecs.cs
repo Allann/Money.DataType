@@ -79,7 +79,9 @@ namespace Hs.Core.Money.Tests.Helpers
             for (var i = 1; i < pascalCasedPhrase.Length; i++)
             {
                 if (Char.IsUpper(pascalCasedPhrase[i]))
+                {
                     builder.Append(" ");
+                }
 
                 builder.Append(pascalCasedPhrase[i]);
             }

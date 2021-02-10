@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -28,44 +27,40 @@ namespace Hs.Core.Money.Tests.CurrencySpec
         [Fact(Skip = "For debugging.")]
         public void WriteAllRegionsToFile()
         {
-            using (var stream = File.Open(@"..\..\Regions.txt", FileMode.Create))
-            using (var writer = new StreamWriter(stream))
+            using var stream = File.Open(@"..\..\Regions.txt", FileMode.Create);
+            using var writer = new StreamWriter(stream);
+            foreach (var c in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
             {
-                foreach (var c in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
-                {
-                    var reg = new RegionInfo(c.LCID);
-                    writer.WriteLine("CultureName: {0}", c.Name);
-                    writer.WriteLine("CultureEnglishName: {0}", c.EnglishName);
-                    writer.WriteLine("Name: {0}", reg.Name);
-                    writer.WriteLine("NativeName: {0}", reg.NativeName);
-                    writer.WriteLine("EnglishName: {0}", reg.EnglishName);
-                    writer.WriteLine("DisplayName: {0}", reg.DisplayName);
-                    writer.WriteLine("CurrencySymbol: {0}", reg.CurrencySymbol);
-                    writer.WriteLine("ISOCurrencySymbol: {0}", reg.ISOCurrencySymbol);
-                    writer.WriteLine("CurrencyEnglishName: {0}", reg.CurrencyEnglishName);
-                    writer.WriteLine("CurrencyNativeName: {0}", reg.CurrencyNativeName);
-                    writer.WriteLine(string.Empty);
-                }
+                var reg = new RegionInfo(c.LCID);
+                writer.WriteLine("CultureName: {0}", c.Name);
+                writer.WriteLine("CultureEnglishName: {0}", c.EnglishName);
+                writer.WriteLine("Name: {0}", reg.Name);
+                writer.WriteLine("NativeName: {0}", reg.NativeName);
+                writer.WriteLine("EnglishName: {0}", reg.EnglishName);
+                writer.WriteLine("DisplayName: {0}", reg.DisplayName);
+                writer.WriteLine("CurrencySymbol: {0}", reg.CurrencySymbol);
+                writer.WriteLine("ISOCurrencySymbol: {0}", reg.ISOCurrencySymbol);
+                writer.WriteLine("CurrencyEnglishName: {0}", reg.CurrencyEnglishName);
+                writer.WriteLine("CurrencyNativeName: {0}", reg.CurrencyNativeName);
+                writer.WriteLine(string.Empty);
             }
         }
 
         [Fact(Skip = "For debugging.")]
         public void WriteAllCurrenciesToFile()
         {
-            using (var stream = File.Open(@"..\..\ISOCurrencies1.txt", FileMode.Create))
-            using (var writer = new StreamWriter(stream))
+            using var stream = File.Open(@"..\..\ISOCurrencies1.txt", FileMode.Create);
+            using var writer = new StreamWriter(stream);
+            foreach (var currency in Currency.GetAllCurrencies())
             {
-                foreach (var currency in Currency.GetAllCurrencies())
-                {
-                    writer.WriteLine("EnglishName: {0}", currency.EnglishName);
-                    writer.WriteLine("Code: {0}, Number: {1}, Sign: {2}", currency.Code, currency.Number, currency.Symbol);
-                    writer.WriteLine(
-                        "MajorUnit: {0}, MinorUnit: {1}, DecimalDigits: {2}",
-                        currency.MajorUnit,
-                        currency.MinorUnit,
-                        currency.DecimalDigits);
-                    writer.WriteLine(string.Empty);
-                }
+                writer.WriteLine("EnglishName: {0}", currency.EnglishName);
+                writer.WriteLine("Code: {0}, Number: {1}, Sign: {2}", currency.Code, currency.Number, currency.Symbol);
+                writer.WriteLine(
+                    "MajorUnit: {0}, MinorUnit: {1}, DecimalDigits: {2}",
+                    currency.MajorUnit,
+                    currency.MinorUnit,
+                    currency.DecimalDigits);
+                writer.WriteLine(string.Empty);
             }
         }
 
@@ -75,24 +70,22 @@ namespace Hs.Core.Money.Tests.CurrencySpec
             var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
             var symbolLookup = new Dictionary<String, String>();
 
-            using (var stream = File.Open(@"..\..\ISOSymbols.txt", FileMode.Create))
-            using (var writer = new StreamWriter(stream))
+            using var stream = File.Open(@"..\..\ISOSymbols.txt", FileMode.Create);
+            using var writer = new StreamWriter(stream);
+            foreach (var culture in cultures)
             {
-                foreach (var culture in cultures)
-                {
-                    var regionInfo = new RegionInfo(culture.LCID);
-                    symbolLookup[regionInfo.ISOCurrencySymbol] = regionInfo.CurrencySymbol;
-                }
+                var regionInfo = new RegionInfo(culture.LCID);
+                symbolLookup[regionInfo.ISOCurrencySymbol] = regionInfo.CurrencySymbol;
+            }
 
-                foreach (var keyvalue in symbolLookup.OrderBy(s => s.Key))
-                {
-                    writer.WriteLine("Code: {0}, Sign: {1}", keyvalue.Key, keyvalue.Value);
-                    writer.WriteLine(string.Empty);
-                }
+            foreach (var keyvalue in symbolLookup.OrderBy(s => s.Key))
+            {
+                writer.WriteLine("Code: {0}, Sign: {1}", keyvalue.Key, keyvalue.Value);
+                writer.WriteLine(string.Empty);
             }
         }
     }
-    
+
     public class GivenIWantCurrencyFromIsoCode
     {
         [Fact]
@@ -224,11 +217,11 @@ namespace Hs.Core.Money.Tests.CurrencySpec
 
     public class GivenIWantToCompareCurrencies
     {
-        private Currency _euro1 = Currency.FromCode("EUR");
+        private readonly Currency _euro1 = Currency.FromCode("EUR");
 
-        private Currency _euro2 = Currency.FromCode("EUR");
+        private readonly Currency _euro2 = Currency.FromCode("EUR");
 
-        private Currency _dollar = Currency.FromCode("USD");
+        private readonly Currency _dollar = Currency.FromCode("USD");
 
         [Fact]
         public void WhenComparingEquality_ThenCurrencyShouldBeEqual()
@@ -267,15 +260,15 @@ namespace Hs.Core.Money.Tests.CurrencySpec
 
     public class GivenIWantToKnowMinorUnit
     {
-        private Currency _eur = Currency.FromCode("EUR");
+        private readonly Currency _eur = Currency.FromCode("EUR");
 
-        private Currency _yen = Currency.FromCode("JPY");
+        private readonly Currency _yen = Currency.FromCode("JPY");
 
-        private Currency _din = Currency.FromCode("BHD");
+        private readonly Currency _din = Currency.FromCode("BHD");
 
-        private Currency _mga = Currency.FromCode("MGA"); // Malagasy ariary
+        private readonly Currency _mga = Currency.FromCode("MGA"); // Malagasy ariary
 
-        private Currency _xau = Currency.FromCode("XAU"); // Gold            
+        private readonly Currency _xau = Currency.FromCode("XAU"); // Gold            
 
         [Fact]
         public void WhenAskingForEuro_ThenMinorUnitShouldBeOneCent()
@@ -450,33 +443,6 @@ namespace Hs.Core.Money.Tests.CurrencySpec
         }
     }
 
-    //public class GiveIWantToUseALotOfCurrencies
-    //{
-    //    [Fact]
-    //    public void WhenCreatingOneMillion_ThenItShouldBeWithinFourSeconds()
-    //    {
-    //        var sw = Stopwatch.StartNew();
-    //        var c = Currency.FromCode("EUR");
-
-    //        double max = 1000000;
-    //        Action action = () =>
-    //            {
-    //                sw.Restart();
-    //                for (var i = 0; i < max; i++)
-    //                {
-    //                    c = i % 3 == 0 
-    //                        ? Currency.FromCode("EUR") 
-    //                        : i % 2 == 0 
-    //                        ? Currency.FromCode("USD") 
-    //                        : Currency.FromCode("JPY");
-    //                }
-    //                sw.Stop();
-    //            };
-
-    //        action.ExecutionTime().Should().BeLessOrEqualTo(new TimeSpan(0, 0, 5));
-    //    }
-    //}
-
     public class GivenIWantToDeconstructCurrency
     {
         [Fact]
@@ -563,7 +529,10 @@ namespace Hs.Core.Money.Tests.CurrencySpec
                 .ToList();
 
             FileFound = File.Exists(FilePath);
-            if (!FileFound) return;
+            if (!FileFound)
+            {
+                return;
+            }
 
             var document = XDocument.Load(FilePath);
 
@@ -590,7 +559,10 @@ namespace Hs.Core.Money.Tests.CurrencySpec
         [Fact(Skip = "For debugging.")]
         public void WhenCurrenciesInISOList_ThenShouldBeDefinedInRegistry()
         {
-            if (!FileFound) return;
+            if (!FileFound)
+            {
+                return;
+            }
 
             var missingCurrencies =
                 _isoCurrencies
@@ -603,7 +575,10 @@ namespace Hs.Core.Money.Tests.CurrencySpec
         [Fact(Skip = "For debugging.")]
         public void WhenCurrenciesInRegistryAndCurrent_ThenTheyShouldAlsoBeDefinedInTheIsoList()
         {
-            if (!FileFound) return;
+            if (!FileFound)
+            {
+                return;
+            }
 
             var notDefinedCurrencies =
                 _definedCurrencies
@@ -618,14 +593,20 @@ namespace Hs.Core.Money.Tests.CurrencySpec
         [Fact(Skip = "For debugging.")]
         public void WhenCompareCurrencies_ThenTheyShouldHaveTheSameEnglishName()
         {
-            if (!FileFound) return;
+            if (!FileFound)
+            {
+                return;
+            }
 
             var differences = new List<string>();
             foreach (var c in _definedCurrencies)
             {
                 var found = _isoCurrencies.Where(x => x.Currency == c.Code).ToList();
 
-                if (found.Count == 0) continue;
+                if (found.Count == 0)
+                {
+                    continue;
+                }
                 var a = found.First();
                 // ignore casing (for now)
                 if (!string.Equals(c.EnglishName, a.CurrencyName, StringComparison.InvariantCultureIgnoreCase))
@@ -639,14 +620,20 @@ namespace Hs.Core.Money.Tests.CurrencySpec
         [Fact(Skip = "For debugging.")]
         public void WhenCompareCurrencies_ThenTheyShouldHaveTheSameNumber()
         {
-            if (!FileFound) return;
+            if (!FileFound)
+            {
+                return;
+            }
 
             var differences = new List<string>();
             foreach (var c in _definedCurrencies)
             {
                 var found = _isoCurrencies.Where(x => x.Currency == c.Code).ToList();
 
-                if (found.Count == 0) continue;
+                if (found.Count == 0)
+                {
+                    continue;
+                }
                 var a = found.First();
                 // ignore casing (for now)
                 if (!string.Equals(c.Number, a.CurrencyNumber, StringComparison.InvariantCultureIgnoreCase))
@@ -660,18 +647,27 @@ namespace Hs.Core.Money.Tests.CurrencySpec
         [Fact(Skip = "For debugging.")]
         public void WhenCompareCurrencies_ThenTheyShouldHaveTheSameNumberOfMinorDigits()
         {
-            if (!FileFound) return;
+            if (!FileFound)
+            {
+                return;
+            }
 
             var differences = new List<string>();
             foreach (var c in _definedCurrencies)
             {
                 var found = _isoCurrencies.Where(x => x.Currency == c.Code).ToList();
 
-                if (found.Count == 0) continue;
+                if (found.Count == 0)
+                {
+                    continue;
+                }
                 var a = found.First();
                 if (!string.Equals(c.DecimalDigits.ToString(), a.CurrencyMinorUnits, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (c.DecimalDigits == -1 && a.CurrencyMinorUnits == "N.A.") continue;
+                    if (c.DecimalDigits == -1 && a.CurrencyMinorUnits == "N.A.")
+                    {
+                        continue;
+                    }
                     differences.Add($"{c.Code}: expected {a.CurrencyMinorUnits} minor units but found {c.DecimalDigits}");
                 }
             }
@@ -681,10 +677,8 @@ namespace Hs.Core.Money.Tests.CurrencySpec
         [Fact(Skip = "For debugging.")]
         public async Task UpdateTheStoredIsoFileOnDisk()
         {
-            using (var client = new WebClient())
-            {
-                await client.DownloadFileTaskAsync(new Uri("https://www.currency-iso.org/dam/downloads/lists/list_one.xml"), FilePath);
-            }
+            using var client = new WebClient();
+            await client.DownloadFileTaskAsync(new Uri("https://www.currency-iso.org/dam/downloads/lists/list_one.xml"), FilePath);
         }
     }
 }

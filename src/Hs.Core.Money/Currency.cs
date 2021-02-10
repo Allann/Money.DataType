@@ -30,7 +30,7 @@ namespace Hs.Core.Money
 
         /// <summary>A singleton instance of the currencies registry.</summary>
         [NonSerialized]
-        internal static readonly CurrencyRegistry Registry = new CurrencyRegistry();
+        internal static readonly CurrencyRegistry Registry = new();
 
         /// <summary>Initializes a new instance of the <see cref="Currency" /> struct.</summary>
         /// <param name="code">The code.</param>
@@ -175,7 +175,7 @@ namespace Hs.Core.Money
         /// <exception cref="ArgumentException">The 'code' is an unknown ISO 4217 currency code.</exception>
         public static Currency FromCode(string code)
         {
-            return !Registry.TryGet(code, out var currency)
+            return !CurrencyRegistry.TryGet(code, out var currency)
                 ? throw new ArgumentException($"{code} is an unknown currency code")
                 : currency;
         }
@@ -330,10 +330,16 @@ namespace Hs.Core.Money
         public void ReadXml(XmlReader reader)
         {
             if (reader == null)
+            {
                 throw new ArgumentNullException(nameof(reader));
+            }
 
             var curr = reader["Currency"];
-            if (curr == null) return;
+            if (curr == null)
+            {
+                return;
+            }
+
             this = FromCode(curr);
         }
 
@@ -345,7 +351,9 @@ namespace Hs.Core.Money
         public void WriteXml(XmlWriter writer)
         {
             if (writer == null)
+            {
                 throw new ArgumentNullException(nameof(writer));
+            }
 
             writer.WriteAttributeString("Currency", Code);
         }

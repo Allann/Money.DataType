@@ -7,10 +7,10 @@ namespace Hs.Core.Money.Tests
     {
         public class GivenIWantToIncrementMoney
         {
-            private Amount _yens = new Amount(765m, Currency.FromCode("JPY"));
-            private Amount _euros = new Amount(765.43m, Currency.FromCode("EUR"));
-            private Amount _dollars = new Amount(765.43m, Currency.FromCode("USD"));
-            private Amount _dinars = new Amount(765.432m, Currency.FromCode("BHD"));
+            private Amount _yens = new(765m, Currency.FromCode("JPY"));
+            private Amount _euros = new(765.43m, Currency.FromCode("EUR"));
+            private Amount _dollars = new(765.43m, Currency.FromCode("USD"));
+            private Amount _dinars = new(765.432m, Currency.FromCode("BHD"));
 
             [Fact]
             public void WhenIncrementing_ThenAmountShouldIncrementWithMinorUnit()
@@ -36,10 +36,10 @@ namespace Hs.Core.Money.Tests
         
         public class GivenIWantToDecrementMoney
         {
-            private Amount _yens = new Amount(765m, Currency.FromCode("JPY"));
-            private Amount _euros = new Amount(765.43m, Currency.FromCode("EUR"));
-            private Amount _dollars = new Amount(765.43m, Currency.FromCode("USD"));
-            private Amount _dinars = new Amount(765.432m, Currency.FromCode("BHD"));
+            private Amount _yens = new(765m, Currency.FromCode("JPY"));
+            private Amount _euros = new(765.43m, Currency.FromCode("EUR"));
+            private Amount _dollars = new(765.43m, Currency.FromCode("USD"));
+            private Amount _dinars = new(765.432m, Currency.FromCode("BHD"));
 
             [Fact]
             public void WhenDecrementing_ThenAmountShouldDecrementWithMinorUnit()
@@ -65,8 +65,8 @@ namespace Hs.Core.Money.Tests
 
         public class GivenIWantToAddAndSubtractMoneyUnary
         {
-            private readonly Amount _tenEuroPlus = new Amount(10.00m, "EUR");
-            private readonly Amount _tenEuroMin = new Amount(-10.00m, "EUR");
+            private readonly Amount _tenEuroPlus = new(10.00m, "EUR");
+            private readonly Amount _tenEuroMin = new(-10.00m, "EUR");
 
             [Fact]
             public void WhenUsingUnaryPlusOperator_ThenThisSucceed()

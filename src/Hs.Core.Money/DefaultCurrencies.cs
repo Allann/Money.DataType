@@ -20,7 +20,7 @@ namespace Hs.Core.Money
         /// <summary>Used for indication that the number of decimal digits doesn't matter, for example for gold or silver.</summary>
         internal const double NotApplicable = -1;
 
-        private static readonly object _obj = new object();
+        private static readonly object _obj = new();
         private static IList<Currency>? _currencies = null;
 
         internal static IEnumerable<Currency>? Currencies 

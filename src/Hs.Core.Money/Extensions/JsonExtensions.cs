@@ -27,7 +27,19 @@ namespace Hs.Core.Money.Extensions
         /// <param name="obj">Object being serialized</param>
         /// <param name="includeNull">Flag to determine if null properties will be serialized</param>
         /// <returns>Json string representation of the object</returns>
-        public static string ToJson<T>(this T obj, bool includeNull = true)
+        public static string ToJson<T>(this T obj)            
+        {
+            return ToJson(obj, true);
+        }
+
+        /// <summary>
+        /// Serialize object into a valid Json string using NewtonSoft.Json
+        /// </summary>
+        /// <typeparam name="T">Type of object to serialize</typeparam>
+        /// <param name="obj">Object being serialized</param>
+        /// <param name="includeNull">Flag to determine if null properties will be serialized</param>
+        /// <returns>Json string representation of the object</returns>
+        public static string ToJson<T>(this T obj, bool includeNull)
         {
             var settings = GetSettings(includeNull);
             return JsonConvert.SerializeObject(obj, settings);

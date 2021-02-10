@@ -225,18 +225,6 @@ namespace Hs.Core.Money
         /// <summary>Gets the <see cref="Currency"/> of the monetry instance.</summary>
         public Currency Currency { get; private set; }
 
-        /// <summary>Returns a value indicating whether two instances of <see cref="Amount"/> are equal.</summary>
-        /// <param name="left">A <see cref="Amount"/> object on the left side.</param>
-        /// <param name="right">A <see cref="Amount"/> object on the right side.</param>
-        /// <returns>true if left and right are equal; otherwise, false.</returns>
-        public static bool operator ==(Amount left, Amount right) => left.Equals(right);
-
-        /// <summary>Returns a value indicating whether two instances of <see cref="Amount"/> are not equal.</summary>
-        /// <param name="left">A <see cref="Amount"/> object on the left side.</param>
-        /// <param name="right">A <see cref="Amount"/> object on the right side.</param>
-        /// <returns>true if left and right are not equal; otherwise, false.</returns>
-        public static bool operator !=(Amount left, Amount right) => !(left == right);
-
         /// <summary>Returns a value indicating whether this instance and a specified <see cref="Amount"/> object represent the same
         /// value.</summary>
         /// <param name="other">A <see cref="Amount"/> object.</param>

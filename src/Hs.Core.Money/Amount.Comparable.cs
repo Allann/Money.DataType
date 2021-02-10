@@ -1,14 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hs.Core.Money
 {
     /// <summary>Represents Money, an amount defined in a specific Currency.</summary>
     public partial struct Amount : IComparable, IComparable<Amount>
     {
+        /// <summary>Returns a value indicating whether a specified <see cref="Amount"/> is equal to another specified <see cref="Amount"/>.</summary>
+        /// <param name="left">A <see cref="Amount"/> object on the left side.</param>
+        /// <param name="right">A <see cref="Amount"/> object on the right side.</param>
+        /// <returns>true if left is equal to right; otherwise, false.</returns>
+        public static bool operator ==(Amount left, Amount right) => Equals(left, right);
+
+        /// <summary>Returns a value indicating whether a specified <see cref="Amount"/> is not equal to another specified <see cref="Amount"/>.</summary>
+        /// <param name="left">A <see cref="Amount"/> object on the left side.</param>
+        /// <param name="right">A <see cref="Amount"/> object on the right side.</param>
+        /// <returns>true if left is not equal to right; otherwise, false.</returns>
+        public static bool operator !=(Amount left, Amount right) => !Equals(left, right);
+
         /// <summary>Returns a value indicating whether a specified <see cref="Amount"/> is less than another specified <see cref="Amount"/>.</summary>
         /// <param name="left">A <see cref="Amount"/> object on the left side.</param>
         /// <param name="right">A <see cref="Amount"/> object on the right side.</param>

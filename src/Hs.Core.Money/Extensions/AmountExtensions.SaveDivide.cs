@@ -28,12 +28,9 @@ namespace Hs.Core.Money.Extensions
         [SuppressMessage("Microsoft.Usage", "CA2233:OperationsShouldNotOverflow", MessageId = "number-1", Justification = "Can't be lower than zero.")]
         public static IEnumerable<Amount> SafeDivide(this Amount money, int shares, MidpointRounding rounding)
         {
-            if (shares <= 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(shares), "Number of shares must be greater than 1");
-            }
-
-            return SafeDivideIterator();
+            return shares <= 1
+                ? throw new ArgumentOutOfRangeException(nameof(shares), $"Number of {nameof(shares)} must be greater than 1")
+                : SafeDivideIterator();
 
             IEnumerable<Amount> SafeDivideIterator()
             {
@@ -69,12 +66,9 @@ namespace Hs.Core.Money.Extensions
         /// <exception cref="ArgumentOutOfRangeException">shares;Number of shares must be greater than 1.</exception>
         public static IEnumerable<Amount> SafeDivide(this Amount money, int[] ratios, MidpointRounding rounding)
         {
-            if (ratios.Any(ratio => ratio < 1))
-            {
-                throw new ArgumentOutOfRangeException(nameof(ratios), "All ratios must be greater or equal than 1");
-            }
-
-            return SafeDivideIterator();
+            return ratios.Any(ratio => ratio < 1)
+                ? throw new ArgumentOutOfRangeException(nameof(ratios), $"All {nameof(ratios)} must be greater or equal than 1")
+                : SafeDivideIterator();
 
             IEnumerable<Amount> SafeDivideIterator()
             {

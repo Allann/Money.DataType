@@ -6,11 +6,11 @@ namespace Hs.Core.Money.Tests.AmountComparableSpec
 {
     public class GivenIWantToCompareAmount
     {
-        private Amount _tenEuro1 = new Amount(10.00m, "EUR");
-        private Amount _tenEuro2 = new Amount(10.00m, "EUR");
-        private Amount _twentyEuro = new Amount(20.00m, "EUR");
-        private Amount _tenDollar = new Amount(10.00m, "USD");
-        private Amount _twentyDollar = new Amount(20.00m, "USD");
+        private readonly Amount _tenEuro1 = new(10.00m, "EUR");
+        private readonly Amount _tenEuro2 = new(10.00m, "EUR");
+        private readonly Amount _twentyEuro = new(20.00m, "EUR");
+        private readonly Amount _tenDollar = new(10.00m, "USD");
+        private readonly Amount _twentyDollar = new(20.00m, "USD");
 
         [Fact]
         public void WhenCurrencyAndValueAreEqual_ThenAmountShouldBeEqual()

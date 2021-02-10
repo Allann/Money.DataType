@@ -46,8 +46,17 @@ namespace Hs.Core.Money
         /// <param name="baseCurrency">The base currency.</param>
         /// <param name="quoteCurrency">The quote currency.</param>
         /// <param name="rate">The rate of the exchange.</param>
+        public ExchangeRate(Currency baseCurrency, Currency quoteCurrency, double rate)
+            : this(baseCurrency, quoteCurrency, rate, 6)
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="ExchangeRate"/> struct.</summary>
+        /// <param name="baseCurrency">The base currency.</param>
+        /// <param name="quoteCurrency">The quote currency.</param>
+        /// <param name="rate">The rate of the exchange.</param>
         /// <param name="numberOfDecimals">The number of decimals to round the exchange rate to.</param>
-        public ExchangeRate(Currency baseCurrency, Currency quoteCurrency, double rate, int numberOfDecimals = 6)
+        public ExchangeRate(Currency baseCurrency, Currency quoteCurrency, double rate, int numberOfDecimals)
             : this(baseCurrency, quoteCurrency, Math.Round((decimal)rate, numberOfDecimals))
         {
         }
@@ -65,8 +74,17 @@ namespace Hs.Core.Money
         /// <param name="baseCode">The code of the base currency.</param>
         /// <param name="quoteCode">The code of the quote currency.</param>
         /// <param name="rate">The rate of the exchange.</param>
+        public ExchangeRate(string baseCode, string quoteCode, double rate)
+            : this(Currency.FromCode(baseCode), Currency.FromCode(quoteCode), rate, 6)
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="ExchangeRate"/> struct.</summary>
+        /// <param name="baseCode">The code of the base currency.</param>
+        /// <param name="quoteCode">The code of the quote currency.</param>
+        /// <param name="rate">The rate of the exchange.</param>
         /// <param name="numberOfDecimals">The number of decimals to round the exchange rate to.</param>
-        public ExchangeRate(string baseCode, string quoteCode, double rate, int numberOfDecimals = 6)
+        public ExchangeRate(string baseCode, string quoteCode, double rate, int numberOfDecimals)
             : this(Currency.FromCode(baseCode), Currency.FromCode(quoteCode), rate, numberOfDecimals)
         {
         }
@@ -101,17 +119,11 @@ namespace Hs.Core.Money
         /// <exception cref="FormatException">rate is not in the correct format.</exception>
         public static ExchangeRate Parse(string rate)
         {
-            if (rate == null)
-            {
-                throw new ArgumentNullException(nameof(rate));
-            }
-
-            if (!TryParse(rate, out var fx))
-            {
-                throw new FormatException("Rate is not in the correct format. Currencies are the same or the rate is not a number.");
-            }
-
-            return fx;
+            return rate == null
+                ? throw new ArgumentNullException(nameof(rate))
+                : !TryParse(rate, out var fx)
+                ? throw new FormatException("Rate is not in the correct format. Currencies are the same or the rate is not a number.")
+                : fx;
         }
 
         /// <summary>Converts the string representation of an exchange rate to its <see cref="ExchangeRate"/> equivalent. A return

@@ -10,10 +10,10 @@ namespace Hs.Core.Money.Tests.AmountFormattableSpec
 {
     public class GivenIWantMoneyAsString
     {
-        private Amount _yen = new Amount(765.4321m, Currency.FromCode("JPY"));
-        private Amount _euro = new Amount(765.4321m, Currency.FromCode("EUR"));
-        private Amount _dollar = new Amount(765.4321m, Currency.FromCode("USD"));
-        private Amount _dinar = new Amount(765.4321m, Currency.FromCode("BHD"));
+        private readonly Amount _yen = new(765.4321m, Currency.FromCode("JPY"));
+        private readonly Amount _euro = new(765.4321m, Currency.FromCode("EUR"));
+        private readonly Amount _dollar = new(765.4321m, Currency.FromCode("USD"));
+        private readonly Amount _dinar = new(765.4321m, Currency.FromCode("BHD"));
         private readonly ITestOutputHelper _output;
 
         public GivenIWantMoneyAsString(ITestOutputHelper output)
@@ -152,10 +152,10 @@ namespace Hs.Core.Money.Tests.AmountFormattableSpec
             _output = output ?? throw new ArgumentNullException(nameof(output));
         }
 
-        private Amount _yen = new Amount(765.4321m, Currency.FromCode("JPY"));
-        private Amount _euro = new Amount(765.4321m, Currency.FromCode("EUR"));
-        private Amount _dollar = new Amount(765.4321m, Currency.FromCode("USD"));
-        private Amount _dinar = new Amount(765.4321m, Currency.FromCode("BHD"));
+        private Amount _yen = new(765.4321m, Currency.FromCode("JPY"));
+        private Amount _euro = new(765.4321m, Currency.FromCode("EUR"));
+        private Amount _dollar = new(765.4321m, Currency.FromCode("USD"));
+        private Amount _dinar = new(765.4321m, Currency.FromCode("BHD"));
 
         [Fact]
         [UseCulture("en-US")]
@@ -264,10 +264,10 @@ namespace Hs.Core.Money.Tests.AmountFormattableSpec
 
     public class GivenIWantMoneyAsStringWithCurrencyCode
     {
-        private Amount _yen = new Amount(765.4321m, Currency.FromCode("JPY"));
-        private Amount _euro = new Amount(765.4321m, Currency.FromCode("EUR"));
-        private Amount _dollar = new Amount(765.4321m, Currency.FromCode("USD"));
-        private Amount _dinar = new Amount(765.4321m, Currency.FromCode("BHD"));
+        private Amount _yen = new(765.4321m, Currency.FromCode("JPY"));
+        private Amount _euro = new(765.4321m, Currency.FromCode("EUR"));
+        private Amount _dollar = new(765.4321m, Currency.FromCode("USD"));
+        private Amount _dinar = new(765.4321m, Currency.FromCode("BHD"));
         private readonly ITestOutputHelper _output;
 
         public GivenIWantMoneyAsStringWithCurrencyCode(ITestOutputHelper output)
@@ -382,10 +382,10 @@ namespace Hs.Core.Money.Tests.AmountFormattableSpec
 
     public class GivenIWantMoneyAsStringWithEnglishCurrencyName
     {
-        private Amount _yen = new Amount(765.4321m, Currency.FromCode("JPY"));
-        private Amount _euro = new Amount(765.4321m, Currency.FromCode("EUR"));
-        private Amount _dollar = new Amount(765.4321m, Currency.FromCode("USD"));
-        private Amount _dinar = new Amount(765.4321m, Currency.FromCode("BHD"));
+        private Amount _yen = new(765.4321m, Currency.FromCode("JPY"));
+        private Amount _euro = new(765.4321m, Currency.FromCode("EUR"));
+        private Amount _dollar = new(765.4321m, Currency.FromCode("USD"));
+        private Amount _dinar = new(765.4321m, Currency.FromCode("BHD"));
         private readonly ITestOutputHelper _output;
 
         public GivenIWantMoneyAsStringWithEnglishCurrencyName(ITestOutputHelper output)

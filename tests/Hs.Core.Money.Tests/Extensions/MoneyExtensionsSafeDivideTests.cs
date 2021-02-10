@@ -10,8 +10,8 @@ namespace Hs.Core.Money.Tests.Extensions
     {
         public class GivenIWantToSafelyDivideMoney
         {
-            private Amount _eurocent5 = new Amount(0.05m, "EUR");
-            private Amount _euro1 = new Amount(1.0m, "EUR");
+            private readonly Amount _eurocent5 = new(0.05m, "EUR");
+            private readonly Amount _euro1 = new(1.0m, "EUR");
 
             [Fact]
             public void WhenDividing5CentsByTwo_ThenDivisionShouldNotLoseCents()

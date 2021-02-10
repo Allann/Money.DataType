@@ -10,11 +10,8 @@ namespace Hs.Core.Money.Tests.ExchangeRateSpec
     public class GivenIWantToConvertMoney
     {
         private readonly Currency _euro = Currency.FromCode("EUR");
-
         private readonly Currency _dollar = Currency.FromCode("USD");
-
-        private ExchangeRate _exchangeRate = new ExchangeRate(Currency.FromCode("EUR"), Currency.FromCode("USD"), 1.2591);
-                             // EUR/USD 1.2591
+        private readonly ExchangeRate _exchangeRate = new(Currency.FromCode("EUR"), Currency.FromCode("USD"), 1.2591);
 
         [Fact]
         public void WhenConvertingEurosToDollars_ThenConversionShouldBeCorrect()
@@ -222,7 +219,7 @@ namespace Hs.Core.Money.Tests.ExchangeRateSpec
 
     public class GivenIWantToConvertExchangeRateToString
     {
-        ExchangeRate fx = new ExchangeRate(Currency.FromCode("EUR"), Currency.FromCode("USD"), 1.2524);
+        ExchangeRate fx = new(Currency.FromCode("EUR"), Currency.FromCode("USD"), 1.2524);
 
         [Fact, UseCulture("en-US")]
         public void WhenShowingExchangeRateInAmerica_ThenReturnCurrencyPairWithDot()
@@ -410,14 +407,22 @@ namespace Hs.Core.Money.Tests.ExchangeRateSpec
         public void WhenTheAreEquel_ThenComparingShouldBeTrueOtherwiseFalse(ExchangeRate fx1, ExchangeRate fx2, bool areEqual)
         {
             if (areEqual)
+            {
                 fx1.Should().Be(fx2);
+            }
             else
+            {
                 fx1.Should().NotBe(fx2);
+            }
 
             if (areEqual)
+            {
                 fx1.GetHashCode().Should().Be(fx2.GetHashCode()); //using GetHashCode()
+            }
             else
+            {
                 fx1.GetHashCode().Should().NotBe(fx2.GetHashCode()); //using GetHashCode()
+            }
 
             fx1.Equals(fx2).Should().Be(areEqual); //using Equal()
             ExchangeRate.Equals(fx1, fx2).Should().Be(areEqual); //using static Equals()            

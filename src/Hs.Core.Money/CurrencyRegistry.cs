@@ -23,14 +23,14 @@ namespace Hs.Core.Money
         /// <param name="currency">When this method returns, contains the <see cref="Currency"/> that has the specified code, or the default value of the type if the operation failed.</param>
         /// <returns><b>true</b> if <see cref="CurrencyRegistry"/> contains a <see cref="Currency"/> with the specified code; otherwise, <b>false</b>.</returns>
         /// <exception cref="ArgumentNullException">The value of 'code' cannot be null or empty.</exception>
-        public bool TryGet(string code, out Currency currency)
+        public static bool TryGet(string code, out Currency currency)
         {
             if (string.IsNullOrWhiteSpace(code))
             {
                 throw new ArgumentNullException(nameof(code));
             }
 
-            var items = Namespaces.Keys.Select(ns => Currencies.TryGetValue(ns + "::" + code, out var c));
+            _ = Namespaces.Keys.Select(ns => Currencies.TryGetValue(ns + "::" + code, out var c));
             var found = new List<Currency>();
             foreach (var ns in Namespaces.Keys)
             {

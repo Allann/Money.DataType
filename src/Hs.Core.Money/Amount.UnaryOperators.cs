@@ -26,12 +26,12 @@
         /// <summary>Pluses the specified money.</summary>
         /// <param name="money">The money.</param>
         /// <returns>The result.</returns>
-        public static Amount Plus(Amount money) => new Amount(+money.Value, money.Currency);
+        public static Amount Plus(Amount money) => new(+money.Value, money.Currency);
 
         /// <summary>Negates the specified money.</summary>
         /// <param name="money">The money.</param>
         /// <returns>The result.</returns>
-        public static Amount Negate(Amount money) => new Amount(-money.Value, money.Currency);
+        public static Amount Negate(Amount money) => new(-money.Value, money.Currency);
 
         /// <summary>Increments the specified money.</summary>
         /// <param name="money">The money.</param>

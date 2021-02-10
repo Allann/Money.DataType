@@ -26,40 +26,40 @@ namespace Hs.Core.Money
         /// <summary>Performs an implicit conversion from <see cref="long"/> to <see cref="Amount"/>.</summary>
         /// <param name="money">The money.</param>
         /// <returns>The result of the conversion.</returns>
-        public static implicit operator Amount(long money) => new Amount(money);
+        public static implicit operator Amount(long money) => new(money);
 
         /// <summary>Performs an implicit conversion from <see cref="ulong"/> to <see cref="Amount"/>.</summary>
         /// <param name="money">The money.</param>
         /// <returns>The result of the conversion.</returns>
         [CLSCompliant(false)]
-        public static implicit operator Amount(ulong money) => new Amount(money);
+        public static implicit operator Amount(ulong money) => new(money);
 
         /// <summary>Performs an implicit conversion from <see cref="byte"/> to <see cref="Amount"/>.</summary>
         /// <param name="money">The money.</param>
         /// <returns>The result of the conversion.</returns>
-        public static implicit operator Amount(byte money) => new Amount(money);
+        public static implicit operator Amount(byte money) => new(money);
 
         /// <summary>Performs an implicit conversion from <see cref="ushort"/> to <see cref="Amount"/>.</summary>
         /// <param name="money">The money.</param>
         /// <returns>The result of the conversion.</returns>
         [CLSCompliant(false)]
-        public static implicit operator Amount(ushort money) => new Amount(money);
+        public static implicit operator Amount(ushort money) => new(money);
 
         /// <summary>Performs an implicit conversion from <see cref="uint"/> to <see cref="Amount"/>.</summary>
         /// <param name="money">The money.</param>
         /// <returns>The result of the conversion.</returns>
         [CLSCompliant(false)]
-        public static implicit operator Amount(uint money) => new Amount(money);
+        public static implicit operator Amount(uint money) => new(money);
 
         /// <summary>Performs an implicit conversion from <see cref="double"/> to <see cref="Amount"/>.</summary>
         /// <param name="money">The money.</param>
         /// <returns>The result of the conversion.</returns>
-        public static explicit operator Amount(double money) => new Amount((decimal)money);
+        public static explicit operator Amount(double money) => new((decimal)money);
 
         /// <summary>Performs an implicit conversion from <see cref="decimal"/> to <see cref="Amount"/>.</summary>
         /// <param name="money">The money.</param>
         /// <returns>The result of the conversion.</returns>
-        public static implicit operator Amount(decimal money) => new Amount(money);
+        public static implicit operator Amount(decimal money) => new(money);
 
         /// <summary>Converts the value of this instance to an <see cref="float"/>.</summary>
         /// <param name="money">A <see cref="Amount"/> value.</param>

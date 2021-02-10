@@ -374,19 +374,16 @@ namespace Hs.Core.Money.Tests.AmountSpec
             var value1 = 7922816251426433.7593543950335;
             var value2 = new decimal(value1);
             var value3 = (decimal)value1;
-            //decimal value4 = Decimal.Parse(value1.ToString());
 
             var result0 = value.ToString(CultureInfo.InvariantCulture);
             var result1 = value1.ToString(CultureInfo.InvariantCulture);
             var result2 = value2.ToString(CultureInfo.InvariantCulture);
             var result3 = value3.ToString(CultureInfo.InvariantCulture);
-            //string result4 = value4.ToString(CultureInfo.InvariantCulture);
 
             _output.WriteLine(result0);
             _output.WriteLine(result1);
             _output.WriteLine(result2);
             _output.WriteLine(result3);
-            //_output.WriteLine(result4);
         }
 
         [Fact]
@@ -396,19 +393,16 @@ namespace Hs.Core.Money.Tests.AmountSpec
             var value1 = 79228162514264337593543.950335;
             var value2 = new decimal(value1);
             var value3 = (decimal)value1;
-            //decimal value4 = Decimal.Parse(value1.ToString());
 
             var result0 = value.ToString(CultureInfo.InvariantCulture);
             var result1 = value1.ToString(CultureInfo.InvariantCulture);
             var result2 = value2.ToString(CultureInfo.InvariantCulture);
             var result3 = value3.ToString(CultureInfo.InvariantCulture);
-            //string result4 = value4.ToString(CultureInfo.InvariantCulture);
 
             _output.WriteLine(result0);
             _output.WriteLine(result1);
             _output.WriteLine(result2);
             _output.WriteLine(result3);
-            //_output.WriteLine(result4);
         }
 
         [Fact]

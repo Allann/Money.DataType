@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Hs.Core.Money.Extensions;
 using Hs.Core.Money.Tests.Serialization;
 using FluentAssertions;
@@ -71,7 +70,7 @@ namespace Hs.Core.Money.Serialization.Tests.AmountSerializableSpec
             };
 
             var x = order.Price.ToJson();
-            var y = x.FromJson<Amount>();
+            _ = x.FromJson<Amount>();
 
             var json = order.ToJson();
             var clone = json.FromJson<Order>();

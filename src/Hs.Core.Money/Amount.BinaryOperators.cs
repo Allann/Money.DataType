@@ -1,7 +1,9 @@
-﻿namespace Hs.Core.Money
+﻿using System;
+
+namespace Hs.Core.Money
 {
     /// <summary>Represents Money, an amount defined in a specific Currency.</summary>
-    public partial struct Amount
+    public partial struct Amount : IEquatable<Amount>
     {
         /// <summary>Adds two specified <see cref="Amount"/> values.</summary>
         /// <param name="left">A <see cref="Amount"/> object on the left side.</param>
@@ -79,7 +81,7 @@
         /// <param name="money1">The first <see cref="Amount"/> object.</param>
         /// <param name="money2">The second <see cref="decimal"/> object.</param>
         /// <returns>A <see cref="Amount"/> object with the values of both <see cref="decimal"/> objects added.</returns>
-        public static Amount Add(Amount money1, decimal money2) => new Amount(decimal.Add(money1.Value, money2), money1.Currency);
+        public static Amount Add(Amount money1, decimal money2) => new(decimal.Add(money1.Value, money2), money1.Currency);
 
         /// <summary>Subtracts one specified <see cref="Amount"/> value from another.</summary>
         /// <param name="money1">The first <see cref="Amount"/> object.</param>
@@ -95,20 +97,20 @@
         /// <param name="money1">The first <see cref="Amount"/> object.</param>
         /// <param name="money2">The second <see cref="decimal"/> object.</param>
         /// <returns>A <see cref="Amount"/> object where the second <see cref="decimal"/> object is subtracted from the first.</returns>
-        public static Amount Subtract(Amount money1, decimal money2) => new Amount(decimal.Subtract(money1.Value, money2), money1.Currency);
+        public static Amount Subtract(Amount money1, decimal money2) => new(decimal.Subtract(money1.Value, money2), money1.Currency);
 
         /// <summary>Multiplies the specified money.</summary>
         /// <param name="money">The money.</param>
         /// <param name="multiplier">The multiplier.</param>
         /// <returns>The result as <see cref="Amount"/> after multiplying.</returns>
-        public static Amount Multiply(Amount money, decimal multiplier) => new Amount(decimal.Multiply(money.Value, multiplier), money.Currency);
+        public static Amount Multiply(Amount money, decimal multiplier) => new(decimal.Multiply(money.Value, multiplier), money.Currency);
 
         /// <summary>Divides the specified money.</summary>
         /// <param name="money">The money.</param>
         /// <param name="divisor">The divider.</param>
         /// <returns>The division as <see cref="Amount"/>.</returns>
         /// <remarks>This division can lose money. Use <see cref="Extensions.AmountExtensions.SafeDivide(Amount, int)"/> to do a safe division.</remarks>
-        public static Amount Divide(Amount money, decimal divisor) => new Amount(decimal.Divide(money.Value, divisor), money.Currency);
+        public static Amount Divide(Amount money, decimal divisor) => new(decimal.Divide(money.Value, divisor), money.Currency);
 
         /// <summary>Divides the specified money.</summary>
         /// <param name="money1">The money.</param>

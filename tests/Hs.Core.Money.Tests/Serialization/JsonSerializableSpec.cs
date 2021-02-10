@@ -110,9 +110,13 @@ namespace Hs.Core.Money.Serialization.Tests
                 var clone = json.FromJson<TypeWithNullableMoneyProperty>();
 
                 if (!json.Contains("null"))
+                {
                     clone.Cash.Should().Be(money);
+                }
                 else
+                {
                     clone.Cash.Should().BeNull();
+                }
             }
         }
     }

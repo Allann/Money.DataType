@@ -7,7 +7,7 @@ namespace Hs.Core.Money.Tests.AmountConvertibleSpec
 {
     public class GivenIWantToConvertAmount
     {
-        readonly Amount _euros = new Amount(765.43m, "EUR");
+        readonly Amount _euros = new(765.43m, "EUR");
 
         [Fact]
         public void WhenConvertingToDecimal_ThenThisShouldSucceed()
@@ -36,7 +36,7 @@ namespace Hs.Core.Money.Tests.AmountConvertibleSpec
 
     public class GivenIWantToExplicitCastAmountToNumericType
     {
-        readonly Amount _euros = new Amount(10.00m, "EUR");
+        readonly Amount _euros = new(10.00m, "EUR");
 
         [Fact]
         public void WhenExplicitCastingToDecimal_ThenCastingShouldSucceed()
