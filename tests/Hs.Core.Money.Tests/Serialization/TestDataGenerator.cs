@@ -77,7 +77,7 @@ public class NestedJsonTestData : TheoryData<string, Order>
 public class Order
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
     public Amount Price { get; set; }
     public Amount? Discount { get; set; }
 }

@@ -43,7 +43,7 @@ public class GivenIWantCurrencyFromIsoCode
     [Fact]
     public void WhenIsoCodeIsNull_ThenCreatingShouldThrow()
     {
-        Action action = () => Currency.FromCode(null);
+        Action action = () => Currency.FromCode(null!);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -76,7 +76,7 @@ public class GivenIWantCurrencyFromRegionOrCulture
     [Fact]
     public void WhenRegionInfoIsNull_ThenCreatingShouldThrow()
     {
-        Action action = () => Currency.FromRegion((RegionInfo)null);
+        Action action = () => Currency.FromRegion((RegionInfo)null!);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -95,7 +95,7 @@ public class GivenIWantCurrencyFromRegionOrCulture
     [Fact]
     public void WhenUsingRegionNameThatIsNull_ThenCreatingShouldThrow()
     {
-        Action action = () => Currency.FromRegion((string)null);
+        Action action = () => Currency.FromRegion((string)null!);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -114,7 +114,7 @@ public class GivenIWantCurrencyFromRegionOrCulture
     [Fact]
     public void WhenCultureInfoIsNull_ThenCreatingShouldThrow()
     {
-        Action action = () => Currency.FromCulture(null);
+        Action action = () => Currency.FromCulture(null!);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -263,7 +263,7 @@ public class GivenIWantToInitiateInternallyACurrency
     [Fact]
     public void WhenCodeIsNull_ThenCreatingShouldThrow()
     {
-        Action action = () => { _ = new Currency(null, "978", 2, "Euro", "€"); };
+        Action action = () => { _ = new Currency(null!, "978", 2, "Euro", "€"); };
 
         action.Should().Throw<ArgumentException>();
     }
@@ -319,7 +319,7 @@ public class GivenIWantToSerializeCurrencyWithJsonSerializer
 
     private static T Clone<T>(object source)
     {
-        return source.ToJson().FromJson<T>();
+        return source.ToJson().FromJson<T>()!;
     }
 }
 

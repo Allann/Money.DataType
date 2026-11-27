@@ -6,6 +6,9 @@ namespace Hs.Core.Money.Tests.Extensions;
 
 public class MoneyExtensionsSafeDivideTests
 {
+    private static readonly int[] TwoThreeThree = [2, 3, 3];
+    private static readonly int[] OneVerySmall = [200, 300, 1];
+
     public class GivenIWantToSafelyDivideMoney
     {
         private readonly Amount _eurocent5 = new(0.05m, "EUR");
@@ -52,7 +55,7 @@ public class MoneyExtensionsSafeDivideTests
         [Fact]
         public void WhenDividing1EuroByGivenRatios_ThenDivisionShouldNotLoseCents()
         {
-            var enumerable = _euro1.SafeDivide(new[] { 2, 3, 3 }).ToList();
+            var enumerable = _euro1.SafeDivide(TwoThreeThree).ToList();
 
             enumerable.Should().NotBeNullOrEmpty()
                 .And.HaveCount(3)
@@ -70,7 +73,7 @@ public class MoneyExtensionsSafeDivideTests
         [Fact]
         public void WhenDividing1EuroByGivenRatiosWhereOneIsVerySmall_ThenDivisionShouldNotLoseCents()
         {
-            var enumerable = _euro1.SafeDivide(new[] { 200, 300, 1 }).ToList();
+            var enumerable = _euro1.SafeDivide(OneVerySmall).ToList();
 
             enumerable.Should().NotBeNullOrEmpty()
                 .And.HaveCount(3)

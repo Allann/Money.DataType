@@ -208,7 +208,7 @@ public class GivenIWantToParseExplicitCurrency
     [Fact, UseCulture("nl-NL")]
     public void WhenValueIsNull_ThenThowExeception()
     {
-        Action action = () => Amount.Parse(null, Currency.FromCode("EUR"));
+        Action action = () => Amount.Parse(null!, Currency.FromCode("EUR"));
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -224,7 +224,7 @@ public class GivenIWantToParseExplicitCurrency
     [Fact, UseCulture("nl-NL")]
     public void WhenValueIsNullWithOverrideMethod_ThenThowExeception()
     {
-        Action action = () => Amount.Parse(null, NumberStyles.Currency, null, Currency.FromCode("EUR"));
+        Action action = () => Amount.Parse(null!, NumberStyles.Currency, null, Currency.FromCode("EUR"));
 
         action.Should().Throw<ArgumentNullException>();
     }

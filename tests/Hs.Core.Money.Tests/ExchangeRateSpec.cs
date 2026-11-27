@@ -284,7 +284,7 @@ public class GivenIWantToParseACurrencyPair
     [Fact]
     public void WhenCurrencyPairIsNull_ThenThrowException()
     {
-        Action action = () => ExchangeRate.Parse(null);
+        Action action = () => ExchangeRate.Parse(null!);
 
         action.Should().Throw<ArgumentNullException>();
     }

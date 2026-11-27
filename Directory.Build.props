@@ -8,6 +8,14 @@
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
+  <PropertyGroup Label="Code quality">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <!-- Code-quality rules at "recommended"; style rules only where .editorconfig says so. -->
+    <AnalysisLevelStyle>latest-default</AnalysisLevelStyle>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
   <PropertyGroup Label="Package metadata">
     <Authors>Allan Nielsen</Authors>
     <Company>Hybrid Solution</Company>

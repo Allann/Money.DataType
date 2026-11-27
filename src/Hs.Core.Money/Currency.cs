@@ -24,9 +24,11 @@ public readonly record struct Currency
     /// <remarks>See https://en.wikipedia.org/wiki/Currency_sign_(typography).</remarks>
     public static string GenericCurrencySign => "¤";
 
-    /// <summary>Initializes a new currency. Missing names and numbers become empty, a missing symbol becomes <see cref="GenericCurrencySign"/>.</summary>
-    /// <param name="minorUnit">The smallest unit, when it isn't a power of ten: 0.2 for a currency divided into fifths.
-    /// Defaults to 10 to the power of -<paramref name="decimalDigits"/>, e.g. 0.01 for two digits.</param>
+    /// <summary>
+    /// Initializes a new currency. Missing names and numbers become empty, a missing symbol becomes <see cref="GenericCurrencySign"/>.
+    /// The minor unit defaults to 10 to the power of minus the decimal digits (0.01 for two digits); pass it only when it isn't
+    /// a power of ten, e.g. 0.2 for a currency divided into fifths.
+    /// </summary>
     /// <exception cref="ArgumentException"><paramref name="code"/> or <paramref name="namespace"/> is null or whitespace.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="decimalDigits"/> is outside 0-28, or <paramref name="minorUnit"/> isn't positive.</exception>
     internal Currency(
@@ -100,6 +102,7 @@ public readonly record struct Currency
     public DateTime? ValidTo { get; }
 
     /// <summary>The major currency unit, always 1.</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "Part of a currency's shape, alongside MinorUnit; static would break callers.")]
     public decimal MajorUnit => 1;
 
     /// <summary>The smallest unit of the currency, e.g. 0.01 for the euro, 1 for the yen and 0.2 for the Malagasy ariary.</summary>

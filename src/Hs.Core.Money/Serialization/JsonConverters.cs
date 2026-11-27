@@ -33,7 +33,7 @@ public sealed class AmountJsonConverter : JsonConverter<Amount>
 
         if (currency is null)
         {
-            throw new ArgumentNullException("currency", "An amount must include a currency.");
+            throw new JsonException("An amount must include a currency.");
         }
 
         if (value is null)

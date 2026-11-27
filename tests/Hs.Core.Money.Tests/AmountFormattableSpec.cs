@@ -60,7 +60,7 @@ public class GivenIWantMoneyAsString
     [Fact]
     public void WhenNullFormat_ThenThisShouldNotThrow()
     {
-        Action action = () => _yen.ToString((string)null);
+        Action action = () => _yen.ToString((string?)null);
 
         action.Should().NotThrow<ArgumentNullException>();
     }
@@ -98,7 +98,7 @@ public class GivenIWantMoneyAsString
     [Fact]
     public void WhenNullFormatNumberFormatIsUsed_ThenThisShouldNotThrow()
     {
-        Action action = () => _yen.ToString((NumberFormatInfo)null);
+        Action action = () => _yen.ToString((NumberFormatInfo?)null);
 
         action.Should().NotThrow<ArgumentNullException>();
     }
@@ -106,7 +106,7 @@ public class GivenIWantMoneyAsString
     [Fact]
     public void WhenUsingToStringWithOneStringArgument_ThenExpectsTheSameAsWithTwoArguments()
     {
-        Func<string> oneParameter = () => _yen.ToString((string)null);
+        Func<string> oneParameter = () => _yen.ToString((string?)null);
         Func<string> twoParameter = () => _yen.ToString(null, null);
 
         oneParameter().Should().Be(twoParameter());
@@ -115,7 +115,7 @@ public class GivenIWantMoneyAsString
     [Fact]
     public void WhenUsingToStringWithOneProviderArgument_ThenExpectsTheSameAsWithTwoArguments()
     {
-        Func<string> oneParameter = () => _yen.ToString((IFormatProvider)null);
+        Func<string> oneParameter = () => _yen.ToString((IFormatProvider?)null);
         Func<string> twoParameter = () => _yen.ToString(null, null);
 
         oneParameter().Should().Be(twoParameter());

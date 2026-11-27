@@ -91,7 +91,7 @@ public static class JsonSerializableSpec
         public void WhenDeserializingWithoutCurrency_ThenThisShouldFail()
         {
             Action action = () => "{\"value\":200}".FromJson<Amount>();
-            action.Should().Throw<ArgumentNullException>();
+            action.Should().Throw<System.Text.Json.JsonException>().WithMessage("*currency*");
         }
 
         [Fact]
@@ -103,7 +103,7 @@ public static class JsonSerializableSpec
             item.ToJson().Should().Contain("\"cash\":null");
         }
 
-        private class TypeWithMoneyProperty
+        private sealed class TypeWithMoneyProperty
         {
             public Amount Cash { get; set; }
         }
@@ -116,10 +116,10 @@ public static class JsonSerializableSpec
 
             var clone = json.FromJson<TypeWithMoneyProperty>();
 
-            clone.Cash.Should().Be(money);
+            clone!.Cash.Should().Be(money);
         }
 
-        private class TypeWithNullableMoneyProperty
+        private sealed class TypeWithNullableMoneyProperty
         {
             public Amount? Cash { get; set; }
         }
@@ -134,11 +134,11 @@ public static class JsonSerializableSpec
 
             if (!json.Contains("null"))
             {
-                clone.Cash.Should().Be(money);
+                clone!.Cash.Should().Be(money);
             }
             else
             {
-                clone.Cash.Should().BeNull();
+                clone!.Cash.Should().BeNull();
             }
         }
     }

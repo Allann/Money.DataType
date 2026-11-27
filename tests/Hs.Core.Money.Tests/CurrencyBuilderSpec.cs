@@ -109,7 +109,7 @@ public class GivenIWantToCreateCustomCurrency
     [Fact]
     public void WhenCodeIsNull_ThenThrowException()
     {
-        Action action = () => new CurrencyBuilder(null, "virtual");
+        Action action = () => new CurrencyBuilder(null!, "virtual");
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -125,7 +125,7 @@ public class GivenIWantToCreateCustomCurrency
     [Fact]
     public void WhenNamespaceIsNull_ThenThrowException()
     {
-        Action action = () => new CurrencyBuilder("BTC4", null);
+        Action action = () => new CurrencyBuilder("BTC4", null!);
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -205,7 +205,7 @@ public class GivenIWantToUnregisterCurrency
     [Fact]
     public void WhenCodeIsNull_ThenThrowException()
     {
-        Action action = () => CurrencyBuilder.Unregister(null, "ISO-4217");
+        Action action = () => CurrencyBuilder.Unregister(null!, "ISO-4217");
 
         action.Should().Throw<ArgumentNullException>();
     }
@@ -221,7 +221,7 @@ public class GivenIWantToUnregisterCurrency
     [Fact]
     public void WhenNamespaceIsNull_ThenThrowException()
     {
-        Action action = () => CurrencyBuilder.Unregister("EUR", null);
+        Action action = () => CurrencyBuilder.Unregister("EUR", null!);
 
         action.Should().Throw<ArgumentNullException>();
     }

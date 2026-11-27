@@ -12,8 +12,8 @@ namespace Hs.Core.Money.Tests.Helpers;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 public class UseCultureAttribute : BeforeAfterTestAttribute
 {
-    private CultureInfo _originalCulture;
-    private CultureInfo _originalUiCulture;
+    private CultureInfo? _originalCulture;
+    private CultureInfo? _originalUiCulture;
 
     /// <summary>Replaces the culture and UI culture of the current thread with <paramref name="culture" /></summary>
     /// <param name="culture">The name of the culture.</param>
@@ -63,8 +63,8 @@ public class UseCultureAttribute : BeforeAfterTestAttribute
     /// <param name="methodUnderTest">The method under test</param>
     public override void After(MethodInfo methodUnderTest, IXunitTest test)
     {
-        Thread.CurrentThread.CurrentCulture = _originalCulture;
-        Thread.CurrentThread.CurrentUICulture = _originalUiCulture;
+        Thread.CurrentThread.CurrentCulture = _originalCulture!; // set in Before, which xunit always runs first
+        Thread.CurrentThread.CurrentUICulture = _originalUiCulture!;
 
         CultureInfo.CurrentCulture.ClearCachedData();
         CultureInfo.CurrentUICulture.ClearCachedData();
