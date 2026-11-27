@@ -1,0 +1,19 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package metadata">
+    <Authors>Allan Nielsen</Authors>
+    <Company>Hybrid Solution</Company>
+    <Copyright>Copyright © 2020-$([System.DateTime]::UtcNow.Year) Allan Nielsen</Copyright>
+    <RepositoryUrl>https://github.com/Allann/Money.DataType</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+</Project>

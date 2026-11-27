@@ -1,10 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Description>Writes numbers out in words, in the language of a culture (English and Dutch).</Description>
+    <PackageTags>NumberToWords;Words;Localization</PackageTags>
   </PropertyGroup>
 
 </Project>
