@@ -18,13 +18,9 @@ internal static class CurrencyRegistry
     public static bool TryGet(string code, out Currency currency)
     {
         ThrowIfNullOrWhiteSpace(code);
-        if (Currencies.TryGetValue((Currency.IsoNamespace, code), out currency) || Currencies.TryGetValue((HistoricNamespace, code), out currency))
-        {
-            return true;
-        }
-
-        currency = Currencies.Values.Where(c => c.Code == code).OrderBy(c => c.Namespace, StringComparer.Ordinal).FirstOrDefault();
-        return currency != default;
+        return Currencies.TryGetValue((Currency.IsoNamespace, code), out currency)
+            || Currencies.TryGetValue((HistoricNamespace, code), out currency)
+            || TryGetCustom(code, out currency);
     }
 
     /// <summary>Finds a currency by code within a namespace.</summary>
@@ -61,6 +57,13 @@ internal static class CurrencyRegistry
             .ThenBy(c => c.Namespace, StringComparer.Ordinal)
             .ThenBy(c => c.Code, StringComparer.Ordinal)
             .ToArray();
+
+    // Separate from TryGet so the closure over `code` is only allocated on this rare path, not on every lookup.
+    private static bool TryGetCustom(string code, out Currency currency)
+    {
+        currency = Currencies.Values.Where(c => c.Code == code).OrderBy(c => c.Namespace, StringComparer.Ordinal).FirstOrDefault();
+        return currency != default;
+    }
 
     private static void ThrowIfNullOrWhiteSpace(string? value, [System.Runtime.CompilerServices.CallerArgumentExpression(nameof(value))] string? name = null)
     {

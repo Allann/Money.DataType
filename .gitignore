@@ -36,3 +36,5 @@ node_modules/
 dist/
 TestResults/
 coverage.opencover.xml
+# BenchmarkDotNet
+BenchmarkDotNet.Artifacts/

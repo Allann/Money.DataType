@@ -6,6 +6,9 @@
     <File Path="global.json" />
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Hs.Core.Money.Benchmarks/Hs.Core.Money.Benchmarks.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />
     <Project Path="src/Hs.Core/Hs.Core.csproj" />

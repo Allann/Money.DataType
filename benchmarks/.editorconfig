@@ -1,0 +1,3 @@
+[*.cs]
+# BenchmarkDotNet runs instance methods; [Benchmark] methods must not be static.
+dotnet_diagnostic.CA1822.severity = none

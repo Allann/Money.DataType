@@ -3,55 +3,28 @@ using System.Text.Json.Serialization;
 
 namespace Hs.Core.Money.Extensions;
 
-/// <summary>
-/// Extension methods used for Json Serialization
-/// </summary>
+/// <summary>JSON helpers using System.Text.Json with camelCase names and case-insensitive reading.</summary>
 public static class JsonExtensions
 {
-    private static JsonSerializerOptions GetSettings(bool includeNull = true)
-    {
-        return new JsonSerializerOptions
-        {
-            ReferenceHandler = ReferenceHandler.IgnoreCycles,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            PropertyNameCaseInsensitive = true,
-            DefaultIgnoreCondition = includeNull
-                ? JsonIgnoreCondition.Never
-                : JsonIgnoreCondition.WhenWritingNull
-        };
-    }
+    // Options are immutable once used, and building them per call allocates and re-checks the metadata cache; share them.
+    private static readonly JsonSerializerOptions WithNulls = Options(JsonIgnoreCondition.Never);
+    private static readonly JsonSerializerOptions WithoutNulls = Options(JsonIgnoreCondition.WhenWritingNull);
 
-    /// <summary>
-    /// Serialize object into a valid JSON string using System.Text.Json.
-    /// </summary>
-    /// <typeparam name="T">Type of object to serialize</typeparam>
-    /// <param name="obj">Object being serialized</param>
-    /// <returns>Json string representation of the object</returns>
-    public static string ToJson<T>(this T obj)
-    {
-        return ToJson(obj, true);
-    }
+    /// <summary>Serializes <paramref name="obj"/> to JSON, including null properties.</summary>
+    public static string ToJson<T>(this T obj) => ToJson(obj, includeNull: true);
 
-    /// <summary>
-    /// Serialize object into a valid JSON string using System.Text.Json.
-    /// </summary>
-    /// <typeparam name="T">Type of object to serialize</typeparam>
-    /// <param name="obj">Object being serialized</param>
-    /// <param name="includeNull">Flag to determine if null properties will be serialized</param>
-    /// <returns>Json string representation of the object</returns>
-    public static string ToJson<T>(this T obj, bool includeNull)
-    {
-        return JsonSerializer.Serialize(obj, GetSettings(includeNull));
-    }
+    /// <summary>Serializes <paramref name="obj"/> to JSON, leaving out null properties unless <paramref name="includeNull"/>.</summary>
+    public static string ToJson<T>(this T obj, bool includeNull) => JsonSerializer.Serialize(obj, includeNull ? WithNulls : WithoutNulls);
 
-    /// <summary>
-    /// Deserialize a valid JSON string into its object type.
-    /// </summary>
-    /// <typeparam name="T">Type of object to deserialize</typeparam>
-    /// <param name="json">Json string representing the object</param>
-    /// <returns>Object of the type specified</returns>
-    public static T? FromJson<T>(this string json)
+    /// <summary>Deserializes JSON into a <typeparamref name="T"/>.</summary>
+    /// <exception cref="JsonException">The JSON is invalid or doesn't match <typeparamref name="T"/>.</exception>
+    public static T? FromJson<T>(this string json) => JsonSerializer.Deserialize<T>(json, WithNulls);
+
+    private static JsonSerializerOptions Options(JsonIgnoreCondition ignore) => new()
     {
-        return JsonSerializer.Deserialize<T>(json, GetSettings());
-    }
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true,
+        DefaultIgnoreCondition = ignore,
+    };
 }
