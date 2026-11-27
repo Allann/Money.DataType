@@ -19,7 +19,7 @@
   <PropertyGroup Label="Package metadata">
     <Authors>Allan Nielsen</Authors>
     <Company>Hybrid Solution</Company>
-    <Copyright>Copyright © 2020-$([System.DateTime]::UtcNow.Year) Allan Nielsen</Copyright>
+    <Copyright>Copyright © 1999-$([System.DateTime]::UtcNow.Year) Allan Nielsen</Copyright>
     <RepositoryUrl>https://github.com/Allann/Money.DataType</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
