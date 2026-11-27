@@ -7,7 +7,7 @@ namespace Hs.Core.Money;
 public readonly record struct ExchangeRate
 {
     /// <summary>The result of a failed <see cref="TryParse"/>: XXX/XXX 0, where XXX is ISO 4217's "no currency".</summary>
-    private static readonly ExchangeRate None = new(Currency.FromCode("XXX"));
+    private static readonly ExchangeRate None = new(Currency.FromCode(Currency.NoCurrency));
 
     /// <summary>Initializes a new exchange rate.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="baseCurrency"/> or <paramref name="quoteCurrency"/> is the default currency.</exception>

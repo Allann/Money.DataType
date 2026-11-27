@@ -9,7 +9,7 @@ namespace Hs.Core.Money.Tests.Helpers;
 /// <see cref="Thread.CurrentThread" /> <see cref="CultureInfo.CurrentCulture" /> and
 /// <see cref="CultureInfo.CurrentUICulture" /> with another culture.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
+[AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 public class UseCultureAttribute : BeforeAfterTestAttribute
 {
     private CultureInfo? _originalCulture;

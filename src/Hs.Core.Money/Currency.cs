@@ -17,6 +17,9 @@ public readonly record struct Currency
 {
     internal const string IsoNamespace = "ISO-4217";
 
+    /// <summary>ISO 4217's code for "no currency".</summary>
+    internal const string NoCurrency = "XXX";
+
     /// <summary>The most digits a <see cref="decimal"/> can hold after the decimal point.</summary>
     internal const int MaxDecimalDigits = 28;
 
@@ -62,12 +65,20 @@ public readonly record struct Currency
         ValidFrom = validFrom;
     }
 
-    /// <summary>The currency of the current culture's region.</summary>
+    /// <summary>
+    /// The currency of the current culture's region, or XXX (ISO 4217's "no currency") for the invariant culture,
+    /// which has no region; containers and CI runners often run with it.
+    /// </summary>
     public static Currency CurrentCurrency
     {
         get
         {
             var culture = CultureInfo.CurrentCulture;
+            if (culture.Equals(CultureInfo.InvariantCulture))
+            {
+                return FromCode(NoCurrency, IsoNamespace);
+            }
+
             var region = culture.IsNeutralCulture ? RegionInfo.CurrentRegion : new RegionInfo(culture.Name);
             return FromCode(region.ISOCurrencySymbol, IsoNamespace);
         }

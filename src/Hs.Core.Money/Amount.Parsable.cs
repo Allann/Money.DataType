@@ -6,7 +6,7 @@ namespace Hs.Core.Money;
 public readonly partial record struct Amount
 {
     /// <summary>The result of a failed TryParse: zero in XXX, ISO 4217's "no currency".</summary>
-    private static readonly Amount None = new(0, Currency.FromCode("XXX"));
+    private static readonly Amount None = new(0, Currency.FromCode(Currency.NoCurrency));
 
     /// <summary>
     /// Parses an amount in the current culture's number format. The currency is the one whose symbol or code is written
