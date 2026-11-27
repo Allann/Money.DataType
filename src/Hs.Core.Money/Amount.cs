@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 
 namespace Hs.Core.Money;
@@ -9,6 +10,7 @@ namespace Hs.Core.Money;
 /// and ensure that two different currencies cannot be combined arithmetically.
 /// </remarks>
 [JsonConverter(typeof(AmountJsonConverter))]
+[TypeConverter(typeof(AmountTypeConverter))]
 public readonly partial record struct Amount
 {
     /// <summary>Initializes a new instance of the <see cref="Amount"/> struct, based on the current culture.</summary>
