@@ -480,3 +480,35 @@ public class GivenIWantMoneyAsStringWithEnglishCurrencyName
         _dinar.ToString("F4").Should().Be("765.4320 Bahraini dinar");
     }
 }
+
+public class GivenAFormatWithAPrecision
+{
+    private static readonly CultureInfo English = CultureInfo.GetCultureInfo("en-US");
+    private readonly Amount _euro = new(1234.5m, Currency.FromCode("EUR"));
+
+    [Theory]
+    [InlineData("C", "€1,234.50")]
+    [InlineData("C3", "€1,234.500")]
+    [InlineData("G", "€1,234.50")]
+    [InlineData("I", "EUR 1,234.50")]
+    [InlineData("I0", "EUR 1,235")]
+    [InlineData("F", "1,234.50 Euro")]
+    [InlineData("F1", "1,234.5 Euro")]
+    [InlineData("N0", "1,235")]
+    [InlineData("G2", "1.2E+03")]
+    [InlineData("0.0", "1234.5")]
+    public void WhenFormatting_ThenTheSpecifierAndPrecisionAreApplied(string format, string expected) =>
+        _euro.ToString(format, English).Should().Be(expected);
+
+    [Fact]
+    public void WhenTheFormatIsUnknown_ThenItThrows()
+    {
+        Action action = () => _euro.ToString("Q", English);
+
+        action.Should().Throw<FormatException>();
+    }
+
+    [Fact]
+    public void WhenANegativeAmountIsFormattedWithItsCode_ThenTheCodeIsSpacedFromTheNumber() =>
+        (-_euro).ToString("I", English).Should().Be("-EUR 1,234.50");
+}

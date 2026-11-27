@@ -2,159 +2,75 @@ using System.Globalization;
 
 namespace Hs.Core.Money;
 
-/// <summary>Represents Money, an amount defined in a specific Currency.</summary>
+/// <summary>
+/// Formatting an <see cref="Amount"/>. The number format comes from the format provider (or the current culture),
+/// with the symbol and decimal digits of the amount's <see cref="Currency"/>.
+/// </summary>
+/// <remarks>
+/// Format strings, each with an optional precision such as <c>"C3"</c>:
+/// <list type="table">
+/// <item><term>C, G or none</term><description>Currency with its symbol: "€ 1.234,56".</description></item>
+/// <item><term>I</term><description>Currency with its ISO code: "EUR 1.234,56".</description></item>
+/// <item><term>F</term><description>Number followed by the English currency name: "1.234,56 Euro".</description></item>
+/// <item><term>W</term><description>In words, in the format provider's language: "one thousand two hundred and thirty-four euros and fifty-six cents".</description></item>
+/// <item><term>anything else</term><description>A standard or custom numeric format applied to the value, e.g. "N2".</description></item>
+/// </list>
+/// </remarks>
 public readonly partial record struct Amount : IFormattable
 {
-    /// <summary>Converts this <see cref="Amount"/> instance to its equivalent <see cref="string"/> representation.</summary>
-    /// <returns>A string that represents this <see cref="Amount"/> instance.</returns>
-    /// <remarks>
-    /// Converting will use the <see cref="NumberFormatInfo"/> object for the current culture if this has the same
-    /// ISOCurrencySymbol, otherwise the <see cref="NumberFormatInfo"/> from the <see cref="Currency"/> will be used.
-    /// </remarks>
-    public override string? ToString()
-        => ConvertToString(null, null);
+    // NumberFormatInfo currency patterns, with a space between the code and the number for the "I" format.
+    // Positive: $n → $ n, n$ → n $.  Negative: ($n) → ($ n), -$n → -$ n, and so on; patterns 8-16 already have a space.
+    private static readonly int[] SpacedPositivePattern = [2, 3, 2, 3];
+    private static readonly int[] SpacedNegativePattern = [14, 9, 12, 11, 15, 8, 13, 10, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
-    /// <summary>Converts the <see cref="Amount"/> value of this instance to its equivalent <see cref="string"/> representation
-    /// using the specified format.</summary>
-    /// <param name="format">A numeric format string.</param>
-    /// <returns>The string representation of this <see cref="Amount"/> instance as specified by the format.</returns>
-    public string ToString(string format)
-    {
-        return ConvertToString(format, null);
-    }
+    /// <summary>The amount in the current culture's format, with the currency's symbol, e.g. "$1,234.56".</summary>
+    public override string ToString() => ToString(null, null);
 
-    /// <summary>Converts this <see cref="Amount"/> instance to its equivalent <see cref="string"/> representation using the
-    /// specified culture-specific format information.</summary>
-    /// <param name="formatProvider">An <see cref="IFormatProvider"/> that supplies culture-specific formatting information.</param>
-    /// <returns>The string representation of this <see cref="Amount"/> instance as specified by formatProvider.</returns>
-    public string ToString(IFormatProvider formatProvider)
-    {
-        return ConvertToString(null, formatProvider);
-    }
+    /// <summary>The amount in the current culture's number format, using <paramref name="format"/>.</summary>
+    public string ToString(string? format) => ToString(format, null);
 
-    /// <summary>Converts the <see cref="Amount"/> value of this instance to its equivalent <see cref="string"/> representation
-    /// using the specified format and culture-specific format information.</summary>
-    /// <param name="format">A numeric format string.</param>
-    /// <param name="formatProvider">An <see cref="IFormatProvider"/> that supplies culture-specific formatting information.</param>
-    /// <returns>The string representation of this <see cref="Amount"/> instance as specified by the format and formatProvider.</returns>
+    /// <summary>The amount in the number format of <paramref name="formatProvider"/>, with the currency's symbol.</summary>
+    public string ToString(IFormatProvider? formatProvider) => ToString(null, formatProvider);
+
+    /// <summary>The amount using <paramref name="format"/> in the number format of <paramref name="formatProvider"/>.</summary>
+    /// <exception cref="FormatException"><paramref name="format"/> isn't a valid format string.</exception>
     public string ToString(string? format, IFormatProvider? formatProvider)
     {
-        return ConvertToString(format, formatProvider);
+        var (specifier, precision) = Specifier(format);
+        return specifier switch
+        {
+            "" or "G" when precision == "" => Value.ToString("C", CurrencyFormat(Currency, formatProvider)),
+            "I" => Value.ToString($"C{precision}", CurrencyFormat(Currency, formatProvider, withIsoCode: true)),
+            "F" => $"{Value.ToString($"N{(precision == "" ? Currency.DecimalDigits : precision)}", CurrencyFormat(Currency, formatProvider))} {Currency.EnglishName}",
+            "W" => ToWords(formatProvider as CultureInfo ?? CultureInfo.CurrentCulture).Value,
+            _ => Value.ToString(format, CurrencyFormat(Currency, formatProvider)),
+        };
     }
 
-    private static IFormatProvider GetFormatProvider(Currency? currency, IFormatProvider? formatProvider, bool useCode = false)
+    /// <summary>
+    /// The number format of <paramref name="provider"/> (or the current culture) with the symbol, or ISO code,
+    /// and decimal digits of <paramref name="currency"/>.
+    /// </summary>
+    internal static NumberFormatInfo CurrencyFormat(Currency currency, IFormatProvider? provider, bool withIsoCode = false)
     {
-        var cc = CultureInfo.CurrentCulture;
+        var format = (NumberFormatInfo)NumberFormatInfo.GetInstance(provider).Clone();
+        format.CurrencyDecimalDigits = currency.DecimalDigits;
+        format.CurrencySymbol = (withIsoCode ? currency.Code : currency.Symbol) ?? string.Empty;
 
-        var numberFormatInfo = (NumberFormatInfo)cc.NumberFormat.Clone();
-        if (!currency.HasValue)
+        if (withIsoCode)
         {
-            return numberFormatInfo;
+            format.CurrencyPositivePattern = SpacedPositivePattern[format.CurrencyPositivePattern];
+            format.CurrencyNegativePattern = SpacedNegativePattern[format.CurrencyNegativePattern];
         }
 
-        if (formatProvider != null)
-        {
-            numberFormatInfo = formatProvider switch
-            {
-                CultureInfo ci => (NumberFormatInfo)ci.NumberFormat.Clone(),
-                NumberFormatInfo nfi => (NumberFormatInfo)nfi.Clone(),
-                _ => numberFormatInfo
-            };
-        }
-
-        numberFormatInfo.CurrencyDecimalDigits = currency.Value.DecimalDigits;
-        numberFormatInfo.CurrencySymbol = currency.Value.Symbol ?? string.Empty;
-
-        if (!useCode)
-        {
-            return numberFormatInfo;
-        }
-
-        // Replace symbol with the code
-        numberFormatInfo.CurrencySymbol = currency.Value.Code;
-
-        // Add spacing to PositivePattern and NegativePattern
-        if (numberFormatInfo.CurrencyPositivePattern == 0) // $n
-        {
-            numberFormatInfo.CurrencyPositivePattern = 2; // $ n
-        }
-
-        if (numberFormatInfo.CurrencyPositivePattern == 1) // n$
-        {
-            numberFormatInfo.CurrencyPositivePattern = 3; // n $
-        }
-
-        switch (numberFormatInfo.CurrencyNegativePattern)
-        {
-            case 0: // ($n)
-                numberFormatInfo.CurrencyNegativePattern = 14; // ($ n)
-                break;
-            case 1: // -$n
-                numberFormatInfo.CurrencyNegativePattern = 9; // -$ n
-                break;
-            case 2: // $-n
-                numberFormatInfo.CurrencyNegativePattern = 12; // $ -n
-                break;
-            case 3: // $n-
-                numberFormatInfo.CurrencyNegativePattern = 11; // $ n-
-                break;
-            case 4: // (n$)
-                numberFormatInfo.CurrencyNegativePattern = 15; // (n $)
-                break;
-            case 5: // -n$
-                numberFormatInfo.CurrencyNegativePattern = 8; // -n $
-                break;
-            case 6: // n-$
-                numberFormatInfo.CurrencyNegativePattern = 13; // n- $
-                break;
-            case 7: // n$-
-                numberFormatInfo.CurrencyNegativePattern = 10; // n $-
-                break;
-            default:
-                break;
-        }
-
-        return numberFormatInfo;
+        return format;
     }
 
-    private string ConvertToString(string? format, IFormatProvider? formatProvider)
+    /// <summary>Splits a format into its letter and precision, e.g. "I2" into ("I", "2"); other formats come back whole, with no precision.</summary>
+    private static (string Specifier, string Precision) Specifier(string? format) => format switch
     {
-        // TODO: ICustomFormat : http://msdn.microsoft.com/query/dev12.query?appId=Dev12IDEF1&l=EN-US&k=k(System.IFormatProvider);k(TargetFrameworkMoniker-.NETPortable,Version%3Dv4.6);k(DevLang-csharp)&rd=true
-
-        if (format == "W")
-        {
-            return ToWords(formatProvider as CultureInfo ?? CultureInfo.CurrentCulture).Value;
-        }
-
-        // TODO: Hacked solution, solve with better implementation
-        IFormatProvider provider;
-        if (!string.IsNullOrWhiteSpace(format) && format.StartsWith("I", StringComparison.Ordinal) && format.Length >= 1 && format.Length <= 2)
-        {
-            format = format.Replace("I", "C");
-            provider = GetFormatProvider(Currency, formatProvider, true);
-        }
-        else
-        {
-            provider = GetFormatProvider(Currency, formatProvider);
-        }
-
-        if (format == null || format == "G")
-        {
-            format = "C";
-        }
-
-        if (!format.StartsWith("F", StringComparison.Ordinal))
-        {
-            return Value.ToString(format, provider);
-        }
-
-        format = format.Replace("F", "N");
-        if (format.Length == 1)
-        {
-            format += Currency.DecimalDigits;
-        }
-
-        return $"{Value.ToString(format, provider)} {Currency.EnglishName}";
-
-    }
+        null or "" => ("", ""),
+        [var letter, .. var digits] when char.IsAsciiLetter(letter) && digits.All(char.IsAsciiDigit) => (letter.ToString(), digits),
+        _ => (format, ""),
+    };
 }
