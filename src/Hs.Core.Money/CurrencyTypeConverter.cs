@@ -47,11 +47,11 @@ public class CurrencyTypeConverter : TypeConverter
             var v = valueAsString.Split(new[] { ';' });
             if (v.Length == 1 || string.IsNullOrWhiteSpace(v[1]))
             {
-                return new Currency(v[0]);
+                return Currency.FromCode(v[0]);
             }
             else
             {
-                return new Currency(v[0], v[1]);
+                return Currency.FromCode(v[0], v[1]);
             }
         }
 

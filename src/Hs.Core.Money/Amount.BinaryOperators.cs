@@ -1,7 +1,7 @@
 namespace Hs.Core.Money;
 
 /// <summary>Represents Money, an amount defined in a specific Currency.</summary>
-public partial struct Amount : IEquatable<Amount>
+public readonly partial record struct Amount
 {
     /// <summary>Adds two specified <see cref="Amount"/> values.</summary>
     /// <param name="left">A <see cref="Amount"/> object on the left side.</param>

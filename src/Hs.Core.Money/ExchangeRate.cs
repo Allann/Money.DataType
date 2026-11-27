@@ -2,178 +2,122 @@ using System.Globalization;
 
 namespace Hs.Core.Money;
 
-/// <summary>A conversion of money of one currency into money of another currency.</summary>
-/// <remarks>See http://en.wikipedia.org/wiki/Exchange_rate .</remarks>
-public struct ExchangeRate : IEquatable<ExchangeRate>
+/// <summary>The rate at which money in a base currency converts into a quote currency, e.g. EUR/USD 1.2591.</summary>
+/// <remarks>See https://en.wikipedia.org/wiki/Exchange_rate.</remarks>
+public readonly record struct ExchangeRate
 {
-    /// <summary>Initializes a new instance of the <see cref="ExchangeRate"/> struct.</summary>
-    /// <param name="baseCurrency">The base currency.</param>
-    /// <param name="quoteCurrency">The quote currency.</param>
-    /// <param name="rate">The rate of the exchange.</param>
-    /// <exception cref="ArgumentNullException">The value of 'baseCurrency' or 'quoteCurrency' cannot be null.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Rate must be greater than zero.</exception>
-    /// <exception cref="ArgumentException">The base and quote currency can't be equal.</exception>
+    /// <summary>The result of a failed <see cref="TryParse"/>: XXX/XXX 0, where XXX is ISO 4217's "no currency".</summary>
+    private static readonly ExchangeRate None = new(Currency.FromCode("XXX"));
+
+    /// <summary>Initializes a new exchange rate.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="baseCurrency"/> or <paramref name="quoteCurrency"/> is the default currency.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="rate"/> is negative.</exception>
+    /// <exception cref="ArgumentException">The base and quote currency are the same.</exception>
     public ExchangeRate(Currency baseCurrency, Currency quoteCurrency, decimal rate)
-        : this()
     {
-        if (baseCurrency == default(Currency))
+        if (baseCurrency == default)
         {
             throw new ArgumentNullException(nameof(baseCurrency));
         }
 
-        if (rate < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(rate), "Rate must be greater than zero.");
-        }
-
-        if (quoteCurrency == default(Currency))
+        if (quoteCurrency == default)
         {
             throw new ArgumentNullException(nameof(quoteCurrency));
         }
 
+        ArgumentOutOfRangeException.ThrowIfNegative(rate);
         if (baseCurrency == quoteCurrency)
         {
-            throw new ArgumentException("The base and quote currency can't be equal.");
+            throw new ArgumentException("The base and quote currency can't be equal.", nameof(quoteCurrency));
         }
 
         BaseCurrency = baseCurrency;
         QuoteCurrency = quoteCurrency;
-        Value = rate; // value is a ratio
+        Value = rate;
     }
 
-    /// <summary>Initializes a new instance of the <see cref="ExchangeRate"/> struct.</summary>
-    /// <param name="baseCurrency">The base currency.</param>
-    /// <param name="quoteCurrency">The quote currency.</param>
-    /// <param name="rate">The rate of the exchange.</param>
+    /// <summary>Initializes a new exchange rate, rounding <paramref name="rate"/> to six decimals.</summary>
     public ExchangeRate(Currency baseCurrency, Currency quoteCurrency, double rate)
         : this(baseCurrency, quoteCurrency, rate, 6)
     {
     }
 
-    /// <summary>Initializes a new instance of the <see cref="ExchangeRate"/> struct.</summary>
-    /// <param name="baseCurrency">The base currency.</param>
-    /// <param name="quoteCurrency">The quote currency.</param>
-    /// <param name="rate">The rate of the exchange.</param>
-    /// <param name="numberOfDecimals">The number of decimals to round the exchange rate to.</param>
+    /// <summary>Initializes a new exchange rate, rounding <paramref name="rate"/> to <paramref name="numberOfDecimals"/>.</summary>
     public ExchangeRate(Currency baseCurrency, Currency quoteCurrency, double rate, int numberOfDecimals)
         : this(baseCurrency, quoteCurrency, Math.Round((decimal)rate, numberOfDecimals))
     {
     }
 
-    /// <summary>Initializes a new instance of the <see cref="ExchangeRate"/> struct.</summary>
-    /// <param name="baseCode">The code of the base currency.</param>
-    /// <param name="quoteCode">The code of the quote currency.</param>
-    /// <param name="rate">The rate of the exchange.</param>
+    /// <summary>Initializes a new exchange rate between two ISO 4217 currency codes.</summary>
     public ExchangeRate(string baseCode, string quoteCode, decimal rate)
         : this(Currency.FromCode(baseCode), Currency.FromCode(quoteCode), rate)
     {
     }
 
-    /// <summary>Initializes a new instance of the <see cref="ExchangeRate"/> struct.</summary>
-    /// <param name="baseCode">The code of the base currency.</param>
-    /// <param name="quoteCode">The code of the quote currency.</param>
-    /// <param name="rate">The rate of the exchange.</param>
+    /// <summary>Initializes a new exchange rate between two ISO 4217 currency codes, rounding <paramref name="rate"/> to six decimals.</summary>
     public ExchangeRate(string baseCode, string quoteCode, double rate)
         : this(Currency.FromCode(baseCode), Currency.FromCode(quoteCode), rate, 6)
     {
     }
 
-    /// <summary>Initializes a new instance of the <see cref="ExchangeRate"/> struct.</summary>
-    /// <param name="baseCode">The code of the base currency.</param>
-    /// <param name="quoteCode">The code of the quote currency.</param>
-    /// <param name="rate">The rate of the exchange.</param>
-    /// <param name="numberOfDecimals">The number of decimals to round the exchange rate to.</param>
+    /// <summary>Initializes a new exchange rate between two ISO 4217 currency codes, rounding <paramref name="rate"/> to <paramref name="numberOfDecimals"/>.</summary>
     public ExchangeRate(string baseCode, string quoteCode, double rate, int numberOfDecimals)
         : this(Currency.FromCode(baseCode), Currency.FromCode(quoteCode), rate, numberOfDecimals)
     {
     }
 
-    /// <summary>Gets the base currency.</summary>
-    /// <value>The base currency.</value>
-    public Currency BaseCurrency { get; private set; }
+    private ExchangeRate(Currency none)
+    {
+        BaseCurrency = none;
+        QuoteCurrency = none;
+    }
 
-    /// <summary>Gets the quote currency.</summary>
-    /// <value>The quote currency.</value>
-    public Currency QuoteCurrency { get; private set; }
+    /// <summary>The currency being converted from.</summary>
+    public Currency BaseCurrency { get; }
 
-    /// <summary>Gets the value of the exchange rate.</summary>
-    /// <value>The value of the exchange rate.</value>
-    public decimal Value { get; private set; }
+    /// <summary>The currency being converted to.</summary>
+    public Currency QuoteCurrency { get; }
 
-    /// <summary>Implements the operator ==.</summary>
-    /// <param name="left">The left ExchangeRate.</param>
-    /// <param name="right">The right ExchangeRate.</param>
-    /// <returns>The result of the operator.</returns>
-    public static bool operator ==(ExchangeRate left, ExchangeRate right) => left.Equals(right);
+    /// <summary>How many units of <see cref="QuoteCurrency"/> one unit of <see cref="BaseCurrency"/> buys.</summary>
+    public decimal Value { get; }
 
-    /// <summary>Implements the operator !=.</summary>
-    /// <param name="left">The left ExchangeRate.</param>
-    /// <param name="right">The right ExchangeRate.</param>
-    /// <returns>The result of the operator.</returns>
-    public static bool operator !=(ExchangeRate left, ExchangeRate right) => !(left == right);
-
-    /// <summary>Converts the string representation of an exchange rate to its <see cref="ExchangeRate"/> equivalent.</summary>
-    /// <param name="rate">The string representation of the exchange rate to convert.</param>
-    /// <returns>The equivalent to the exchange rate contained in rate.</returns>
-    /// <exception cref="FormatException">rate is not in the correct format.</exception>
+    /// <summary>Parses a currency pair and rate such as "EUR/USD 1.2591" or "EURUSD 1.2591", using the current culture's number format.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="rate"/> is null.</exception>
+    /// <exception cref="FormatException"><paramref name="rate"/> isn't a valid currency pair and rate.</exception>
     public static ExchangeRate Parse(string rate)
     {
-        return rate == null
-            ? throw new ArgumentNullException(nameof(rate))
-            : !TryParse(rate, out var fx)
-            ? throw new FormatException("Rate is not in the correct format. Currencies are the same or the rate is not a number.")
-            : fx;
+        ArgumentNullException.ThrowIfNull(rate);
+        return TryParse(rate, out var exchangeRate)
+            ? exchangeRate
+            : throw new FormatException("Rate is not in the correct format. Currencies are the same or the rate is not a number.");
     }
 
-    /// <summary>Converts the string representation of an exchange rate to its <see cref="ExchangeRate"/> equivalent. A return
-    /// value indicates whether the conversion succeeded or failed.</summary>
-    /// <param name="rate">The string representation of the exchange rate to convert.</param>
-    /// <param name="result">When this method returns, contains the <see cref="ExchangeRate"/> that is equivalent to the exchange rate contained in
-    /// rate, if the conversion succeeded,
-    /// or is zero if the conversion failed. The conversion fails if the rate parameter is null, is not a exchange rate in a
-    /// valid format, or represents a number less than MinValue
-    /// or greater than MaxValue. This parameter is passed uninitialized.</param>
-    /// <returns><b>true</b> if rate was converted successfully; otherwise, <b>false</b>.</returns>
-    public static bool TryParse(string rate, out ExchangeRate result)
+    /// <summary>Tries to parse a currency pair and rate such as "EUR/USD 1.2591"; on failure the result is XXX/XXX 0.</summary>
+    public static bool TryParse(string? rate, out ExchangeRate result)
     {
-        try
+        result = None;
+        var text = rate?.Trim();
+        if (text is not { Length: >= 7 })
         {
-            if (string.IsNullOrWhiteSpace(rate))
-            {
-                throw new ArgumentNullException(nameof(rate));
-            }
-
-            rate = rate.Trim();
-            var baseCurrency = Currency.FromCode(rate.Substring(0, 3));
-            var index = rate.Substring(3, 1) == "/" ? 4 : 3;
-            var quoteCurrency = Currency.FromCode(rate.Substring(index, 3));
-            var value = decimal.Parse(rate.Remove(0, index + 3), NumberFormatInfo.CurrentInfo);
-
-            result = new ExchangeRate(baseCurrency, quoteCurrency, value);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            if (!(ex is FormatException) && !(ex is OverflowException) && !(ex is ArgumentException))
-            {
-                throw;
-            }
-
-            result = new ExchangeRate
-                     {
-                             BaseCurrency = Currency.FromCode("XXX"),
-                             QuoteCurrency = Currency.FromCode("XXX"),
-                             Value = 0,
-                     };
-
             return false;
         }
+
+        var quoteStart = text[3] == '/' ? 4 : 3;
+        if (text.Length < quoteStart + 3
+            || !CurrencyRegistry.TryGet(text[..3], out var baseCurrency)
+            || !CurrencyRegistry.TryGet(text.Substring(quoteStart, 3), out var quoteCurrency)
+            || baseCurrency == quoteCurrency
+            || !decimal.TryParse(text[(quoteStart + 3)..], NumberStyles.Number, NumberFormatInfo.CurrentInfo, out var value)
+            || value < 0)
+        {
+            return false;
+        }
+
+        result = new ExchangeRate(baseCurrency, quoteCurrency, value);
+        return true;
     }
 
-    /// <summary>Deconstructs the current instance into its components.</summary>
-    /// <param name="baseCurrency">The base currency.</param>
-    /// <param name="quoteCurrency">The quote currency.</param>
-    /// <param name="rate">The rate of the exchange.</param>
+    /// <summary>Deconstructs the exchange rate into its currencies and rate.</summary>
     public void Deconstruct(out Currency baseCurrency, out Currency quoteCurrency, out decimal rate)
     {
         baseCurrency = BaseCurrency;
@@ -181,47 +125,20 @@ public struct ExchangeRate : IEquatable<ExchangeRate>
         rate = Value;
     }
 
-    /// <summary>Converts the specified money.</summary>
-    /// <param name="money">The money.</param>
-    /// <returns>The converted money.</returns>
-    /// <exception cref="ArgumentException">Money should have the same currency as the base currency or the quote
-    /// currency.</exception>
+    /// <summary>Converts <paramref name="money"/> from either currency of the pair into the other.</summary>
+    /// <exception cref="ArgumentException"><paramref name="money"/> is in neither currency of the pair.</exception>
     public Amount Convert(Amount money)
     {
-        if (money.Currency != BaseCurrency && money.Currency != QuoteCurrency)
+        if (money.Currency == BaseCurrency)
         {
-            throw new ArgumentException(
-                "Money should have the same currency as the base currency or the quote currency.",
-                nameof(money));
+            return new Amount(money.Value * Value, QuoteCurrency);
         }
 
-        return money.Currency == BaseCurrency
-                   ? new Amount(money.Value * Value, QuoteCurrency)
-                   : new Amount(money.Value / Value, BaseCurrency);
+        return money.Currency == QuoteCurrency
+            ? new Amount(money.Value / Value, BaseCurrency)
+            : throw new ArgumentException("Money should have the same currency as the base currency or the quote currency.", nameof(money));
     }
 
-    /// <summary>Returns the hash code for this instance.</summary>
-    /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-    public override int GetHashCode()
-        => Value.GetHashCode() + 397 * BaseCurrency.GetHashCode() + 397 * QuoteCurrency.GetHashCode();
-
-    /// <summary>Indicates whether this instance and a specified <see cref="ExchangeRate"/> are equal.</summary>
-    /// <param name="other">Another object to compare to.</param>
-    /// <returns>true if <paramref name="other"/> and this instance are the same type and represent the same value; otherwise,
-    /// false.</returns>
-    public bool Equals(ExchangeRate other)
-        => Value == other.Value && BaseCurrency == other.BaseCurrency && QuoteCurrency == other.QuoteCurrency;
-
-    /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-    /// <param name="obj">Another object to compare to.</param>
-    /// <returns>true if <paramref name="obj"/> and this instance are the same type and represent the same value; otherwise,
-    /// false.</returns>
-    public override bool Equals(object? obj)
-        => obj is ExchangeRate fx && Equals(fx);
-
-    /// <summary>Converts this <see cref="ExchangeRate"/> instance to its equivalent <see cref="string"/> representation.</summary>
-    /// <returns>A string that represents this <see cref="ExchangeRate"/> instance.</returns>
-    /// <remarks>See http://en.wikipedia.org/wiki/Currency_Pair for more info about how an ExchangeRate can be presented.</remarks>
-    public override string ToString()
-        => $"{BaseCurrency.Code}/{QuoteCurrency.Code} {Value}";
+    /// <summary>The pair and rate, e.g. "EUR/USD 1.2591".</summary>
+    public override string ToString() => $"{BaseCurrency.Code}/{QuoteCurrency.Code} {Value}";
 }

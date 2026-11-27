@@ -1,7 +1,7 @@
 namespace Hs.Core.Money;
 
 /// <summary>Represents Money, an amount defined in a specific Currency.</summary>
-public partial struct Amount
+public readonly partial record struct Amount
 {
     /// <summary>Implements the operator +.</summary>
     /// <param name="money">The money.</param>

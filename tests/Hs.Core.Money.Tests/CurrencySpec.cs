@@ -1,7 +1,6 @@
 using System.Globalization;
 using AwesomeAssertions;
 using Xunit;
-using System.Xml.Serialization;
 using System.Xml.Linq;
 using System.Net;
 using Hs.Core.Money.Extensions;
@@ -361,58 +360,6 @@ public class GivenIWantToInitiateInternallyACurrency
         Action action = () => { _ = new Currency("EUR", "978", -2, "Euro", "€"); };
 
         action.Should().Throw<ArgumentOutOfRangeException>();
-    }
-}
-
-public class GivenIWantToSerializeCurrencyWitXmlSerializer
-{
-    [Fact]
-    public void WhenSerializingYen_ThenThisShouldSucceed()
-    {
-        var yen = Currency.FromCode("JPY");
-
-        StreamToString(Serialize(yen));
-
-        Clone<Currency>(yen).Should().Be(yen);
-    }
-
-    [Fact]
-    public void WhenSerializingEuro_ThenThisShouldSucceed()
-    {
-        var euro = Currency.FromCode("EUR");
-
-        StreamToString(Serialize(euro));
-
-        Clone<Currency>(euro).Should().Be(euro);
-    }
-
-    private static T Clone<T>(object source)
-    {
-        return Deserialize<T>(Serialize(source));
-    }
-
-    public static T Deserialize<T>(Stream stream)
-    {
-        stream.Position = 0L;
-        var xmlSerializer = new XmlSerializer(typeof(T));
-        return (T)xmlSerializer.Deserialize(stream);
-    }
-
-    public static Stream Serialize(object source)
-    {
-        Stream stream = new MemoryStream();
-        var xmlSerializer = new XmlSerializer(source.GetType());
-        xmlSerializer.Serialize(stream, source);
-        return stream;
-    }
-
-    public static string StreamToString(Stream stream)
-    {
-        stream.Position = 0;
-        using (var reader = new StreamReader(stream))
-        {
-            return reader.ReadToEnd();
-        }
     }
 }
 

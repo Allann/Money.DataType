@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 
 namespace Hs.Core.Money;
@@ -11,8 +9,7 @@ namespace Hs.Core.Money;
 /// and ensure that two different currencies cannot be combined arithmetically.
 /// </remarks>
 [JsonConverter(typeof(AmountJsonConverter))]
-[StructLayout(LayoutKind.Sequential)]
-public partial struct Amount : IEquatable<Amount>
+public readonly partial record struct Amount
 {
     /// <summary>Initializes a new instance of the <see cref="Amount"/> struct, based on the current culture.</summary>
     /// <param name="value">The Amount of money as <see langword="decimal"/>.</param>
@@ -212,60 +209,27 @@ public partial struct Amount : IEquatable<Amount>
     {
     }
 
-    /// <summary>Gets the value of the monetry instance.</summary>
-    public decimal Value { get; private set; }
+    /// <summary>The amount, rounded to the currency's minor unit.</summary>
+    public decimal Value { get; }
 
-    /// <summary>Gets the <see cref="Currency"/> of the monetry instance.</summary>
-    public Currency Currency { get; private set; }
+    /// <summary>The <see cref="Money.Currency"/> the amount is in.</summary>
+    public Currency Currency { get; }
 
-    /// <summary>Returns a value indicating whether this instance and a specified <see cref="Amount"/> object represent the same
-    /// value.</summary>
-    /// <param name="other">A <see cref="Amount"/> object.</param>
-    /// <returns>true if value is equal to this instance; otherwise, false.</returns>
-    public bool Equals(Amount other) => Value == other.Value && Currency == other.Currency;
-
-    /// <summary>Returns a value indicating whether this instance and a specified <see cref="object"/> represent the same type
-    /// and value.</summary>
-    /// <param name="obj">An <see cref="object"/>.</param>
-    /// <returns>true if value is equal to this instance; otherwise, false.</returns>
-    public override bool Equals(object? obj) => obj is Amount money && Equals(money);
-
-    /// <summary>Returns the hash code for this instance.</summary>
-    /// <returns>A 32-bit signed integer hash code.</returns>
-    public override int GetHashCode()
-    {
-        unchecked
-        {
-            var hash = 17;
-            hash = (hash * 23) + Value.GetHashCode();
-            return (hash * 23) + Currency.GetHashCode();
-        }
-    }
-
-    /// <summary>Deconstructs the current instance into its components.</summary>
-    /// <param name="amount">The Amount of money as <see langword="decimal"/>.</param>
-    /// <param name="currency">The Currency of the money.</param>
+    /// <summary>Deconstructs the amount into its value and currency.</summary>
     public void Deconstruct(out decimal amount, out Currency currency)
     {
         amount = Value;
         currency = Currency;
     }
 
-    private static decimal Round(decimal amount, Currency currency, MidpointRounding rounding)
-    {
-        return currency.DecimalDigits switch
+    private static decimal Round(decimal amount, Currency currency, MidpointRounding rounding) =>
+        currency.DecimalDigits switch
         {
             DefaultCurrencies.NotApplicable => Math.Round(amount),
-            DefaultCurrencies.Z07 => Math.Round(amount / 0.2m, 0, rounding) * 0.2m,// divided into five subunits rather than by a power of ten. 5 is 10 to the power of log(5) = 0.69897...
+            DefaultCurrencies.Z07 => Math.Round(amount / 0.2m, 0, rounding) * 0.2m, // divided into five subunits rather than by a power of ten
             _ => Math.Round(amount, (int)currency.DecimalDigits, rounding),
         };
-    }
 
-    [SuppressMessage(
-        "Microsoft.Globalization",
-        "CA1305:SpecifyIFormatProvider",
-        MessageId = "System.String.Format(System.String,System.Object[])",
-        Justification = "Test fail when Invariant is used. Inline JIT bug? When cloning CultureInfo it works.")]
     private static void AssertIsSameCurrency(Amount left, Amount right)
     {
         if (left.Currency != right.Currency)

@@ -3,7 +3,7 @@ using System.Globalization;
 namespace Hs.Core.Money;
 
 /// <summary>Represents Money, an amount defined in a specific Currency.</summary>
-public partial struct Amount : IFormattable
+public readonly partial record struct Amount : IFormattable
 {
     /// <summary>Converts this <see cref="Amount"/> instance to its equivalent <see cref="string"/> representation.</summary>
     /// <returns>A string that represents this <see cref="Amount"/> instance.</returns>

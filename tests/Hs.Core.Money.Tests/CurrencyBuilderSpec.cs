@@ -67,7 +67,7 @@ public class GivenIWantToCreateCustomCurrency
         result.Symbol.Should().Be("฿");
 
         Action action = () => Currency.FromCode("BTC2", "virtual");
-        action.Should().Throw<ArgumentException>().WithMessage("BTC2 is an unknown virtual currency code");
+        action.Should().Throw<ArgumentException>().WithMessage("BTC2 is an unknown virtual currency code*").WithParameterName("code");
     }
 
     [Fact]
