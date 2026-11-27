@@ -33,16 +33,16 @@ internal static class AmountWords
     {
         var words = parts switch
         {
-            { Major: 0, Minor: > 0 } => Count(parts.Minor, units.Minor, culture),
-            { Minor: 0 } => Count(parts.Major, units.Major, culture),
-            _ => $"{Count(parts.Major, units.Major, culture)} {language.And} {Count(parts.Minor, units.Minor, culture)}",
+            { Major: 0, Minor: > 0 } => Count(parts.Minor, units.Minor, language, culture),
+            { Minor: 0 } => Count(parts.Major, units.Major, language, culture),
+            _ => $"{Count(parts.Major, units.Major, language, culture)}{language.And}{Count(parts.Minor, units.Minor, language, culture)}",
         };
 
-        return parts.IsNegative ? $"{language.Minus} {words}" : words;
+        return parts.IsNegative ? language.Minus + words : words;
     }
 
-    private static string Count(decimal count, UnitName unit, CultureInfo culture) =>
-        $"{count.ToWords(culture)} {unit.For(count)}";
+    private static string Count(decimal count, UnitName unit, MoneyLanguage language, CultureInfo culture) =>
+        $"{count.ToWords(culture)}{language.Space}{unit.For(count)}";
 
     private readonly record struct Parts(bool IsNegative, decimal Major, decimal Minor);
 }

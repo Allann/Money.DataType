@@ -9,6 +9,7 @@ public class GivenIWantMoneyInWords
 {
     private static readonly CultureInfo English = CultureInfo.GetCultureInfo("en-AU");
     private static readonly CultureInfo Dutch = CultureInfo.GetCultureInfo("nl-NL");
+    private static readonly CultureInfo Japanese = CultureInfo.GetCultureInfo("ja-JP");
 
     public static TheoryData<decimal, string, string> InEnglish => new()
     {
@@ -34,6 +35,34 @@ public class GivenIWantMoneyInWords
         { 7.5m, "EUR", "zeven euro en vijftig cent" },
         { -0.2m, "EUR", "min twintig cent" },
     };
+
+    // The yen has no minor unit, so amounts are whole yen: fractions round away before they're written.
+    public static TheoryData<decimal, string, string> InJapanese => new()
+    {
+        { 0m, "JPY", "零円" },
+        { 1m, "JPY", "一円" },
+        { 1234.56m, "JPY", "千二百三十五円" },
+        { 10_000m, "JPY", "一万円" },
+        { 123_456_789m, "JPY", "一億二千三百四十五万六千七百八十九円" },
+        { -500m, "JPY", "マイナス五百円" },
+        { 1234.56m, "USD", "千二百三十四ドル五十六セント" },
+        { 0.2m, "EUR", "二十セント" },
+        { -7.5m, "EUR", "マイナス七ユーロ五十セント" },
+    };
+
+    [Theory]
+    [MemberData(nameof(InJapanese))]
+    public void WhenWrittenInJapanese_ThenThereAreNoSpacesOrAnd(decimal value, string code, string expected) =>
+        new Amount(value, Currency.FromCode(code)).ToWords(Japanese).Should().Be(new Words(expected));
+
+    [Fact]
+    public void WhenYenAreFormatted_ThenFiguresAndWordsAgreeOnWholeYen()
+    {
+        var yen = new Amount(1234.56m, Currency.FromCode("JPY"));
+
+        yen.ToString("C", Japanese).Should().Be("¥1,235");
+        yen.ToString("W", Japanese).Should().Be("千二百三十五円");
+    }
 
     [Theory]
     [MemberData(nameof(InEnglish))]

@@ -8,9 +8,9 @@ Two small .NET 10 libraries:
 - **Hs.Core.Money** treats money as a value in its own right: an amount in a currency that can't be accidentally
   added to another currency, rounded to that currency's minor unit, divided without losing a cent, formatted,
   parsed, converted at an exchange rate and written out in words.
-- **Hs.Core** writes any `decimal` out in words, in the language of a culture (English and Dutch so far).
+- **Hs.Core** writes any `decimal` out in words, in the language of a culture (English, Dutch and Japanese so far).
 
-It began life as a job-interview exercise in 2020 and has since been rebuilt to show how I'd write it today:
+It began life as a job-interview exercise in 1999 and has since been rebuilt to show how I'd write it today:
 immutable value types, explicit domain modelling, property-based tests and measured performance.
 
 ## Using it
@@ -18,6 +18,7 @@ immutable value types, explicit domain modelling, property-based tests and measu
 ```csharp
 var enUS = CultureInfo.GetCultureInfo("en-US");
 var nlNL = CultureInfo.GetCultureInfo("nl-NL");
+var jaJP = CultureInfo.GetCultureInfo("ja-JP");
 var price = new Amount(1234.5m, "EUR");
 
 price * 1.21m;                           // 1493.74 EUR: 1493.745 rounds to even (banker's rounding)
@@ -32,11 +33,20 @@ price.ToString("F", enUS);               // "1,234.50 Euro"
 price.ToString("W", enUS);               // "one thousand two hundred and thirty-four euros and fifty cents"
 price.ToString("W", nlNL);               // "duizend tweehonderdvierendertig euro en vijftig cent"
 
+// The yen has no minor unit, so an amount is whole yen in figures and in words.
+var yen = new Amount(1234.56m, "JPY");   // 1235 JPY
+yen.ToString("C", jaJP);                 // "¥1,235"
+yen.ToString("W", jaJP);                 // "千二百三十五円"
+yen.ToString("W", enUS);                 // "one thousand two hundred and thirty-five yen"
+new Amount(1234.56m, "USD").ToString("W", jaJP); // "千二百三十四ドル五十六セント"
+
 var rate = ExchangeRate.Parse("EUR/USD 1.2591");
 rate.Convert(new Amount(100m, "EUR"));   // 125.91 USD
 
 21m.ToWords(enUS);                       // "twenty-one"
 21m.ToWords(nlNL);                       // "eenentwintig"
+21m.ToWords(jaJP);                       // "二十一"
+123_456_789m.ToWords(jaJP);              // "一億二千三百四十五万六千七百八十九": digits group in fours
 ```
 
 Every example above is a test ([ReadmeExamplesSpec](tests/Hs.Core.Money.Tests/ReadmeExamplesSpec.cs)), so it can't
@@ -59,7 +69,7 @@ missing, withdrawn or has the wrong number or minor units fails the build.
 ## Project layout
 
 ```text
-src/Hs.Core                 number to words (English, Dutch)
+src/Hs.Core                 number to words (English, Dutch, Japanese)
 src/Hs.Core.Money           Amount, Currency, ExchangeRate, formatting, parsing, JSON, words
 tests/Hs.Core.Tests         unit and property-based tests
 tests/Hs.Core.Money.Tests   unit, property-based and ISO 4217 conformance tests
@@ -77,7 +87,7 @@ dotnet test --solution Hs.Core.slnx       # xunit v3 on Microsoft.Testing.Platfo
 dotnet test --solution Hs.Core.slnx --coverlet --coverlet-output-format cobertura   # with coverage
 ```
 
-The test suite has about 630 tests, including [CsCheck](https://github.com/AnthonyLloyd/CsCheck) properties: for any
+The test suite has about 670 tests, including [CsCheck](https://github.com/AnthonyLloyd/CsCheck) properties: for any
 generated amount, dividing never loses money, arithmetic obeys its laws, and formatting, JSON and type conversion
 round-trip. Line coverage is 100% for Hs.Core and 97% across Hs.Core.Money's suite. CI builds and tests on Linux
 and Windows, publishes a coverage summary and the NuGet packages, and runs CodeQL.

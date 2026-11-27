@@ -7,7 +7,15 @@ namespace Hs.Core.Tests;
 public class NumberToWordsProperties
 {
     private static readonly Gen<CultureInfo> Languages =
-        Gen.OneOf(CultureInfo.GetCultureInfo("en-AU"), CultureInfo.GetCultureInfo("nl-NL"));
+        Gen.OneOf(CultureInfo.GetCultureInfo("en-AU"), CultureInfo.GetCultureInfo("nl-NL"), CultureInfo.GetCultureInfo("ja-JP"));
+
+    // How each language marks a negative number and a decimal point.
+    private static readonly Dictionary<string, (string Minus, string Point)> Marks = new()
+    {
+        ["en"] = ("minus ", "point"),
+        ["nl"] = ("min ", "komma"),
+        ["ja"] = ("マイナス", "点"),
+    };
 
     // The whole range, with extra weight on whole numbers and on values near the limits.
     private static readonly Gen<decimal> Numbers = Gen.Frequency(
@@ -22,10 +30,7 @@ public class NumberToWordsProperties
     [Fact]
     public void ANegativeNumberIsMinusItsMagnitude() =>
         Numbers.Where(n => n < 0).Select(Languages).Sample((number, culture) =>
-        {
-            var minus = culture.TwoLetterISOLanguageName == "nl" ? "min" : "minus";
-            return number.ToWords(culture).Value == $"{minus} {(-number).ToWords(culture).Value}";
-        });
+            number.ToWords(culture).Value == Marks[culture.TwoLetterISOLanguageName].Minus + (-number).ToWords(culture).Value);
 
     [Fact]
     public void DifferentWholeNumbersHaveDifferentWords() =>
@@ -35,5 +40,5 @@ public class NumberToWordsProperties
     [Fact]
     public void WholeNumbersHaveNoPoint() =>
         Gen.Long.Select(Languages).Sample((number, culture) =>
-            !((decimal)number).ToWords(culture).Value.Contains(culture.TwoLetterISOLanguageName == "nl" ? "komma" : "point", StringComparison.Ordinal));
+            !((decimal)number).ToWords(culture).Value.Contains(Marks[culture.TwoLetterISOLanguageName].Point, StringComparison.Ordinal));
 }

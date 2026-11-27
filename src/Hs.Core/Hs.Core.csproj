@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Writes numbers out in words, in the language of a culture (English and Dutch).</Description>
+    <Description>Writes numbers out in words, in the language of a culture (English, Dutch and Japanese).</Description>
     <PackageTags>NumberToWords;Words;Localization</PackageTags>
   </PropertyGroup>
 

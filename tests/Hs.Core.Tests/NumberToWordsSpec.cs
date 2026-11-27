@@ -8,6 +8,7 @@ public class NumberToWordsSpec
 {
     private static readonly CultureInfo English = CultureInfo.GetCultureInfo("en-AU");
     private static readonly CultureInfo Dutch = CultureInfo.GetCultureInfo("nl-NL");
+    private static readonly CultureInfo Japanese = CultureInfo.GetCultureInfo("ja-JP");
 
     [Fact]
     public void ToWords_UsesTheCurrentCultureByDefault()
@@ -122,5 +123,46 @@ public class NumberToWordsSpec
                 "vijfhonderdveertien triljoen tweehonderdvierenzestig biljard driehonderdzevenendertig biljoen " +
                 "vijfhonderddrieënnegentig miljard vijfhonderddrieënveertig miljoen negenhonderdvijftigduizend " +
                 "driehonderdvijfendertig");
+    }
+
+    public class InJapanese
+    {
+        public static TheoryData<decimal, string> Numbers => new()
+        {
+            { 0m, "零" },
+            { 1m, "一" },
+            { 10m, "十" },
+            { 11m, "十一" },
+            { 21m, "二十一" },
+            { 100m, "百" },
+            { 105m, "百五" },
+            { 110m, "百十" },
+            { 999m, "九百九十九" },
+            { 1_000m, "千" },
+            { 1_234m, "千二百三十四" },
+            { 2_000m, "二千" },
+            { 10_000m, "一万" },
+            { 10_001m, "一万一" },
+            { 12_345m, "一万二千三百四十五" },
+            { 100_000m, "十万" },
+            { 10_000_000m, "千万" },
+            { 100_000_000m, "一億" },
+            { 100_000_001m, "一億一" },
+            { 123_456_789m, "一億二千三百四十五万六千七百八十九" },
+            { 1_000_000_000_000m, "一兆" },
+            { 3.14m, "三点一四" },
+            { 0.5m, "零点五" },
+            { -12.5m, "マイナス十二点五" },
+        };
+
+        [Theory]
+        [MemberData(nameof(Numbers))]
+        public void ToWords_WritesTheNumberOut(decimal number, string expected) =>
+            number.ToWords(Japanese).Should().Be(new Words(expected));
+
+        [Fact]
+        public void ToWords_CoversTheFullDecimalRange() =>
+            decimal.MaxValue.ToWords(Japanese).Value.Should().Be(
+                "七穣九千二百二十八秭千六百二十五垓千四百二十六京四千三百三十七兆五千九百三十五億四千三百九十五万三百三十五");
     }
 }

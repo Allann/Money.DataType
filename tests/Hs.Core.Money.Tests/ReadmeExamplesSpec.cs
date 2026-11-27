@@ -8,6 +8,7 @@ public class GivenTheReadmeExamples
 {
     private static readonly CultureInfo English = CultureInfo.GetCultureInfo("en-US");
     private static readonly CultureInfo Dutch = CultureInfo.GetCultureInfo("nl-NL");
+    private static readonly CultureInfo Japanese = CultureInfo.GetCultureInfo("ja-JP");
 
     [Fact]
     public void ArithmeticStaysInOneCurrency()
@@ -41,6 +42,18 @@ public class GivenTheReadmeExamples
     }
 
     [Fact]
+    public void YenHaveNoMinorUnit()
+    {
+        var yen = new Amount(1234.56m, "JPY");
+
+        yen.Value.Should().Be(1235m);
+        yen.ToString("C", Japanese).Should().Be("¥1,235");
+        yen.ToString("W", Japanese).Should().Be("千二百三十五円");
+        yen.ToString("W", English).Should().Be("one thousand two hundred and thirty-five yen");
+        new Amount(1234.56m, "USD").ToString("W", Japanese).Should().Be("千二百三十四ドル五十六セント");
+    }
+
+    [Fact]
     public void ParsingAndExchange()
     {
         Amount.Parse("1.234,50", NumberStyles.Currency, Dutch, Currency.FromCode("EUR")).Should().Be(new Amount(1234.5m, "EUR"));
@@ -55,6 +68,8 @@ public class GivenTheReadmeExamples
     {
         21m.ToWords(English).Value.Should().Be("twenty-one");
         21m.ToWords(Dutch).Value.Should().Be("eenentwintig");
+        21m.ToWords(Japanese).Value.Should().Be("二十一");
+        123_456_789m.ToWords(Japanese).Value.Should().Be("一億二千三百四十五万六千七百八十九");
         (-1005.5m).ToWords(English).Value.Should().Be("minus one thousand and five point five");
     }
 }

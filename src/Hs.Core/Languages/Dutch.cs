@@ -18,25 +18,27 @@ internal sealed class Dutch : ILanguage
     private static readonly string[] Scales =
         ["", "duizend", "miljoen", "miljard", "biljoen", "biljard", "triljoen", "triljard", "quadriljoen", "quadriljard"];
 
-    public string Minus => "min";
-
-    public string Point => "komma";
-
     public string Digit(int digit) => Units[digit];
 
-    public string Whole(Triplet[] triplets) =>
-        triplets is [] ? "nul" : string.Join(" ", triplets.Select(Group));
+    public string Negative(string magnitude) => $"min {magnitude}";
 
-    private static string Group(Triplet triplet) => triplet switch
+    public string WithFraction(string whole, IEnumerable<string> digits) => $"{whole} komma {string.Join(" ", digits)}";
+
+    public string Whole(decimal whole) => Whole(DigitGroup.Split(whole, 1000));
+
+    private static string Whole(DigitGroup[] groups) =>
+        groups is [] ? "nul" : string.Join(" ", groups.Select(Group));
+
+    private static string Group(DigitGroup group) => group switch
     {
-        { Scale: 0 } => InWords(triplet),
+        { Scale: 0 } => InWords(group),
         { Scale: 1, Value: 1 } => "duizend",
-        { Scale: 1 } => $"{InWords(triplet)}duizend",
-        _ => $"{InWords(triplet)} {Scales[triplet.Scale]}",
+        { Scale: 1 } => $"{InWords(group)}duizend",
+        _ => $"{InWords(group)} {Scales[group.Scale]}",
     };
 
-    private static string InWords(Triplet triplet) =>
-        Hundreds(triplet.Hundreds) + (triplet.Remainder == 0 ? "" : BelowHundred(triplet.Remainder));
+    private static string InWords(DigitGroup group) =>
+        Hundreds(group.Hundreds) + (group.Remainder == 0 ? "" : BelowHundred(group.Remainder));
 
     private static string Hundreds(int hundreds) => hundreds switch
     {

@@ -5,7 +5,7 @@ namespace Hs.Core;
 
 /// <summary>
 /// Writes numbers out in words in the language of a culture, covering the full range of <see cref="decimal"/>.
-/// Supported languages: English and Dutch; any other culture falls back to English.
+/// Supported languages: English, Dutch and Japanese; any other culture falls back to English.
 /// </summary>
 public static class NumberToWords
 {
@@ -15,6 +15,7 @@ public static class NumberToWords
     {
         ["en"] = Fallback,
         ["nl"] = new Dutch(),
+        ["ja"] = new Japanese(),
     };
 
     /// <summary>Writes <paramref name="number"/> out in words in the language of the current culture.</summary>
@@ -31,17 +32,15 @@ public static class NumberToWords
         Languages.GetValueOrDefault(culture.TwoLetterISOLanguageName, Fallback);
 
     private static string Signed(decimal number, ILanguage language) =>
-        number < 0 ? $"{language.Minus} {Unsigned(-number, language)}" : Unsigned(number, language);
+        number < 0 ? language.Negative(Unsigned(-number, language)) : Unsigned(number, language);
 
     private static string Unsigned(decimal number, ILanguage language)
     {
         var whole = decimal.Truncate(number);
         var fraction = number - whole;
-        var words = language.Whole(Triplet.Split(whole));
+        var words = language.Whole(whole);
 
-        return fraction == 0
-            ? words
-            : $"{words} {language.Point} {string.Join(" ", FractionDigits(fraction).Select(language.Digit))}";
+        return fraction == 0 ? words : language.WithFraction(words, FractionDigits(fraction).Select(language.Digit));
     }
 
     private static int[] FractionDigits(decimal fraction)
