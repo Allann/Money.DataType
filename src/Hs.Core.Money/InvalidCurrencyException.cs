@@ -1,53 +1,29 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
+namespace Hs.Core.Money;
 
-namespace Hs.Core.Money
+/// <summary>Thrown when an operation is given amounts in a <see cref="Currency"/> it can't work with, e.g. adding euros to dollars.</summary>
+public sealed class InvalidCurrencyException : InvalidOperationException
 {
-    /// <summary>The exception that is thrown when the <see cref="Currency"/> is invalid for the current context or object state.</summary>
-    [ComVisible(true)]
-    [Serializable]
-    public class InvalidCurrencyException : InvalidOperationException
+    /// <summary>Initializes a new instance with a default message.</summary>
+    public InvalidCurrencyException()
+        : base("The requested operation cannot be performed with the specified currency.")
     {
-        /// <summary>Initializes a new instance of the <see cref="InvalidCurrencyException"/> class.</summary>
-        public InvalidCurrencyException()
-            : base("The requested operation cannot be performed with the specified currency.")
-        {
-        }
+    }
 
-        /// <summary>Initializes a new instance of the <see cref="InvalidCurrencyException"/> class.</summary>
-        /// <param name="message">The message that describes the error.</param>
-        public InvalidCurrencyException(string message)
-            : base(message)
-        {
-        }
+    /// <summary>Initializes a new instance with the given message.</summary>
+    public InvalidCurrencyException(string message)
+        : base(message)
+    {
+    }
 
-        /// <summary>Initializes a new instance of the <see cref="InvalidCurrencyException"/> class.</summary>
-        /// <param name="message">The error message that explains the reason for the exception.</param>
-        /// <param name="innerException">The exception that is the cause of the current exception. If the <paramref name="innerException"/>
-        /// parameter is not a null reference (Nothing in Visual Basic), the current exception is raised in a catch block that
-        /// handles the inner exception.</param>
-        public InvalidCurrencyException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+    /// <summary>Initializes a new instance with the given message and the exception that caused it.</summary>
+    public InvalidCurrencyException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        /// <summary>Initializes a new instance of the <see cref="InvalidCurrencyException"/> class.</summary>
-        /// <param name="expected">The expected currency.</param>
-        /// <param name="actual">The actual currency.</param>
-        public InvalidCurrencyException(Currency expected, Currency actual)
-            : this($"The requested operation expected the currency {expected.Code}, but the actual value was the currency {actual.Code}.")
-        {
-        }
-
-#if !NETSTANDARD1_3
-        /// <summary>Initializes a new instance of the <see cref="InvalidCurrencyException"/> class.</summary>
-        /// <param name="info">The information.</param>
-        /// <param name="context">The context.</param>
-        protected InvalidCurrencyException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-#endif
+    /// <summary>Initializes a new instance describing the currency that was expected and the one that was given.</summary>
+    public InvalidCurrencyException(Currency expected, Currency actual)
+        : this($"The requested operation expected the currency {expected.Code}, but the actual value was the currency {actual.Code}.")
+    {
     }
 }

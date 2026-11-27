@@ -1,0 +1,5 @@
+# Store text with LF line endings; check out with LF everywhere so diffs stay clean across platforms.
+* text=auto eol=lf
+
+*.png binary
+*.ico binary
