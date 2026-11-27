@@ -1,5 +1,4 @@
-using AwesomeAssertions;
-using Xunit;
+using Hs.Core.Money.Tests.Helpers;
 
 namespace Hs.Core.Money.Tests.CurrencyBuilderSpec;
 
@@ -8,6 +7,8 @@ public class GivenIWantToCreateCustomCurrency
     [Fact]
     public void WhenRegisterAsSimpleAsPossible_ThenShouldBeAvailableWithDefaults()
     {
+        using var restore = new RegistryEntry("BTC4");
+
         var result = new CurrencyBuilder("BTC4", "ISO-4217").Register();
 
         var bitcoin = Currency.FromCode("BTC4");
@@ -19,6 +20,8 @@ public class GivenIWantToCreateCustomCurrency
     [Fact]
     public void WhenRegisterBitCoinInIsoNamespace_ThenShouldBeAvailable()
     {
+        using var restore = new RegistryEntry("BTC");
+
         var builder = new CurrencyBuilder("BTC", "ISO-4217")
         {
             EnglishName = "Bitcoin",
@@ -37,6 +40,8 @@ public class GivenIWantToCreateCustomCurrency
     [Fact]
     public void WhenRegisterBitCoin_ThenShouldBeAvailableByExplicitNamespace()
     {
+        using var restore = new RegistryEntry("BTC1", "virtual");
+
         var builder = new CurrencyBuilder("BTC1", "virtual")
         {
             EnglishName = "Bitcoin",
@@ -136,6 +141,8 @@ public class GivenIWantToCreateCustomCurrency
     [Fact]
     public void WhenSymbolIsEmpty_ThenSymbolMustBeDefaultCurrencySign()
     {
+        using var restore = new RegistryEntry("BTC5");
+
         var result = new CurrencyBuilder("BTC5", "ISO-4217")
         {
             EnglishName = "Bitcoin",
@@ -155,6 +162,8 @@ public class GivenIWantToUnregisterCurrency
     [Fact]
     public void WhenUnregisterIsoCurrency_ThenThisMustSucceed()
     {
+        using var restore = new RegistryEntry("PEN");
+
         _ = Currency.FromCode("PEN"); // should work
 
         CurrencyBuilder.Unregister("PEN", "ISO-4217");
@@ -166,6 +175,8 @@ public class GivenIWantToUnregisterCurrency
     [Fact]
     public void WhenUnregisterCustomCurrency_ThenThisMustSucceed()
     {
+        using var restore = new RegistryEntry("XYZ", "virtual");
+
         var builder = new CurrencyBuilder("XYZ", "virtual")
         {
             EnglishName = "Xyz",
@@ -227,21 +238,23 @@ public class GivenIWantToUnregisterCurrency
 public class GivenIWantToReplaceIsoCurrencyWithOwnVersion
 {
     [Fact]
-    public void WhenReplacingEuroWithCustom_ThenThisShouldSucceed()
+    public void WhenReplacingAnIsoCurrencyWithACustomOne_ThenThisShouldSucceed()
     {
+        using var restore = new RegistryEntry("PAB");
+
         // Panamanian balboa
-        var oldEuro = CurrencyBuilder.Unregister("PAB", "ISO-4217");
+        var oldBalboa = CurrencyBuilder.Unregister("PAB", "ISO-4217");
 
         var builder = new CurrencyBuilder("PAB", "ISO-4217");
-        builder.LoadDataFromCurrency(oldEuro);
+        builder.LoadDataFromCurrency(oldBalboa);
         builder.EnglishName = "New Panamanian balboa";
         builder.DecimalDigits = 1;
 
         builder.Register();
 
-        var newEuro = Currency.FromCode("PAB");
-        newEuro.Symbol.Should().Be("B/.");
-        newEuro.EnglishName.Should().Be("New Panamanian balboa");
-        newEuro.DecimalDigits.Should().Be(1);
+        var newBalboa = Currency.FromCode("PAB");
+        newBalboa.Symbol.Should().Be("B/.");
+        newBalboa.EnglishName.Should().Be("New Panamanian balboa");
+        newBalboa.DecimalDigits.Should().Be(1);
     }
 }

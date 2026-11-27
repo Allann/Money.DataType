@@ -2,7 +2,6 @@ using System.Globalization;
 using AwesomeAssertions;
 using Xunit;
 using System.Xml.Linq;
-using System.Net;
 using Hs.Core.Money.Extensions;
 
 namespace Hs.Core.Money.Tests.CurrencySpec;
@@ -16,67 +15,6 @@ public class GivenIWantToKnowAllCurrencies
 
         currencies.Should().NotBeEmpty();
         currencies.Count().Should().BeGreaterThan(100);
-    }
-
-    [Fact(Skip = "For debugging.")]
-    public void WriteAllRegionsToFile()
-    {
-        using var stream = File.Open(@"..\..\Regions.txt", FileMode.Create);
-        using var writer = new StreamWriter(stream);
-        foreach (var c in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
-        {
-            var reg = new RegionInfo(c.LCID);
-            writer.WriteLine("CultureName: {0}", c.Name);
-            writer.WriteLine("CultureEnglishName: {0}", c.EnglishName);
-            writer.WriteLine("Name: {0}", reg.Name);
-            writer.WriteLine("NativeName: {0}", reg.NativeName);
-            writer.WriteLine("EnglishName: {0}", reg.EnglishName);
-            writer.WriteLine("DisplayName: {0}", reg.DisplayName);
-            writer.WriteLine("CurrencySymbol: {0}", reg.CurrencySymbol);
-            writer.WriteLine("ISOCurrencySymbol: {0}", reg.ISOCurrencySymbol);
-            writer.WriteLine("CurrencyEnglishName: {0}", reg.CurrencyEnglishName);
-            writer.WriteLine("CurrencyNativeName: {0}", reg.CurrencyNativeName);
-            writer.WriteLine(string.Empty);
-        }
-    }
-
-    [Fact(Skip = "For debugging.")]
-    public void WriteAllCurrenciesToFile()
-    {
-        using var stream = File.Open(@"..\..\ISOCurrencies1.txt", FileMode.Create);
-        using var writer = new StreamWriter(stream);
-        foreach (var currency in Currency.GetAllCurrencies())
-        {
-            writer.WriteLine("EnglishName: {0}", currency.EnglishName);
-            writer.WriteLine("Code: {0}, Number: {1}, Sign: {2}", currency.Code, currency.Number, currency.Symbol);
-            writer.WriteLine(
-                "MajorUnit: {0}, MinorUnit: {1}, DecimalDigits: {2}",
-                currency.MajorUnit,
-                currency.MinorUnit,
-                currency.DecimalDigits);
-            writer.WriteLine(string.Empty);
-        }
-    }
-
-    [Fact(Skip = "For debugging.")]
-    public void WriteAllCurrencySymbolsToFile()
-    {
-        var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
-        var symbolLookup = new Dictionary<String, String>();
-
-        using var stream = File.Open(@"..\..\ISOSymbols.txt", FileMode.Create);
-        using var writer = new StreamWriter(stream);
-        foreach (var culture in cultures)
-        {
-            var regionInfo = new RegionInfo(culture.LCID);
-            symbolLookup[regionInfo.ISOCurrencySymbol] = regionInfo.CurrencySymbol;
-        }
-
-        foreach (var keyvalue in symbolLookup.OrderBy(s => s.Key))
-        {
-            writer.WriteLine("Code: {0}, Sign: {1}", keyvalue.Key, keyvalue.Value);
-            writer.WriteLine(string.Empty);
-        }
     }
 }
 
@@ -446,180 +384,48 @@ public class GivenIWantToValidateTheDateRange
     }
 }
 
-public class GivenIWantToCompareCurrenciesToIsoXML
+/// <summary>The currency table agrees with the official ISO 4217 list (a snapshot in Data/iso-4217-list-one.xml).</summary>
+/// <remarks>Refresh the snapshot from https://www.six-group.com/en/products-services/financial-information/data-standards.html.</remarks>
+public class GivenTheOfficialIsoList
 {
-    private readonly IEnumerable<Currency> _definedCurrencies;
-    private readonly IEnumerable<IsoCurrency> _isoCurrencies;
+    // ISO lists these as 2 minor units; they're really divided into fifths, see Currency.MinorUnit.
+    private static readonly string[] DividedIntoFifths = ["MGA", "MRU"];
 
-    private const string FilePath = @"..\..\iso.xml";
-    private bool FileFound { get; set; }
-    private DateTime Date { get; set; }
+    private static readonly XDocument Snapshot = XDocument.Load(Path.Combine(AppContext.BaseDirectory, "Data", "iso-4217-list-one.xml"));
 
-    private class IsoCurrency
-    {
-        public string CountryName { get; set; }
-        public string CurrencyName { get; set; }
-        public string Currency { get; set; }
-        public string CurrencyNumber { get; set; }
-        public string CurrencyMinorUnits { get; set; }
-    }
+    private static readonly DateTime Published = DateTime.Parse(Snapshot.Root!.Attribute("Pblshd")!.Value, CultureInfo.InvariantCulture);
 
-    public GivenIWantToCompareCurrenciesToIsoXML()
-    {
-        _definedCurrencies =
-            Currency.GetAllCurrencies()
+    private static readonly IReadOnlyList<IsoCurrency> Iso =
+        Snapshot.Descendants("CcyNtry")
+            .Where(e => e.Element("Ccy") is not null)
+            .Select(e => new IsoCurrency((string)e.Element("Ccy")!, (string?)e.Element("CcyNbr") ?? "", (string?)e.Element("CcyMnrUnts") ?? ""))
+            .DistinctBy(c => c.Code)
             .ToList();
 
-        FileFound = File.Exists(FilePath);
-        if (!FileFound)
-        {
-            return;
-        }
+    // The shipped table, not the live registry, which other tests register currencies in.
+    private static readonly IReadOnlyList<Currency> Defined =
+        DefaultCurrencies.All.Where(c => c.Namespace == "ISO-4217").ToList();
 
-        var document = XDocument.Load(FilePath);
+    [Fact]
+    public void WhenACurrencyIsInTheIsoList_ThenItIsDefined() =>
+        Iso.Select(c => c.Code).Except(Defined.Select(c => c.Code)).Should().BeEmpty();
 
-        _isoCurrencies =
-                document
-                .Element("ISO_4217")
-                .Element("CcyTbl")
-                .Elements("CcyNtry")
-                .Select(e =>
-                    new IsoCurrency
-                    {
-                        CountryName = e.Element("CtryNm").Value,
-                        CurrencyName = e.Element("CcyNm")?.Value,
-                        Currency = e.Element("Ccy")?.Value,
-                        CurrencyNumber = e.Element("CcyNbr")?.Value,
-                        CurrencyMinorUnits = e.Element("CcyMnrUnts")?.Value
-                    })
-                    .Where(a => !string.IsNullOrEmpty(a.Currency)) // ignore currencies without a currency name
-                    .ToList();
+    [Fact]
+    public void WhenACurrencyIsDefinedAndCurrent_ThenItIsInTheIsoList() =>
+        Defined.Where(c => c.IsValidOn(Published)).Select(c => c.Code).Except(Iso.Select(c => c.Code)).Should().BeEmpty();
 
-        Date = DateTime.Parse(document.Element("ISO_4217").Attribute("Pblshd").Value);
-    }
+    [Fact]
+    public void WhenACurrencyIsInBoth_ThenItHasTheSameNumber() =>
+        Iso.Join(Defined, iso => iso.Code, defined => defined.Code, (iso, defined) => (iso.Code, Iso: iso.Number, Defined: defined.Number))
+            .Where(c => c.Iso != c.Defined)
+            .Should().BeEmpty();
 
-    [Fact(Skip = "For debugging.")]
-    public void WhenCurrenciesInISOList_ThenShouldBeDefinedInRegistry()
-    {
-        if (!FileFound)
-        {
-            return;
-        }
+    [Fact]
+    public void WhenACurrencyIsInBoth_ThenItHasTheSameMinorUnits() =>
+        Iso.Where(iso => !DividedIntoFifths.Contains(iso.Code))
+            .Join(Defined, iso => iso.Code, defined => defined.Code, (iso, defined) => (iso.Code, Iso: iso.MinorUnits, Defined: defined.DecimalDigits))
+            .Where(c => (c.Iso == "N.A." ? 0 : int.Parse(c.Iso, CultureInfo.InvariantCulture)) != c.Defined)
+            .Should().BeEmpty();
 
-        var missingCurrencies =
-            _isoCurrencies
-            .Where(a => !_definedCurrencies.Any(c => c.Code == a.Currency))
-            .ToList();
-
-        missingCurrencies.Should().HaveCount(0, $"expected defined currencies to contain {string.Join(", ", missingCurrencies.Select(a => a.Currency + " " + a.CurrencyName))}");
-    }
-
-    [Fact(Skip = "For debugging.")]
-    public void WhenCurrenciesInRegistryAndCurrent_ThenTheyShouldAlsoBeDefinedInTheIsoList()
-    {
-        if (!FileFound)
-        {
-            return;
-        }
-
-        var notDefinedCurrencies =
-            _definedCurrencies
-            .Where(c => c.IsValidOn(Date))
-            .Where(c => !string.IsNullOrEmpty(c.Number))
-            .Where(c => !_isoCurrencies.Any(a => a.Currency == c.Code))
-            .ToList();
-
-        notDefinedCurrencies.Should().HaveCount(0, $"did not expect currencies to contain {string.Join(", ", notDefinedCurrencies.Select(a => a.Code))}");
-    }
-
-    [Fact(Skip = "For debugging.")]
-    public void WhenCompareCurrencies_ThenTheyShouldHaveTheSameEnglishName()
-    {
-        if (!FileFound)
-        {
-            return;
-        }
-
-        var differences = new List<string>();
-        foreach (var c in _definedCurrencies)
-        {
-            var found = _isoCurrencies.Where(x => x.Currency == c.Code).ToList();
-
-            if (found.Count == 0)
-            {
-                continue;
-            }
-            var a = found.First();
-            // ignore casing (for now)
-            if (!string.Equals(c.EnglishName, a.CurrencyName, StringComparison.InvariantCultureIgnoreCase))
-            {
-                differences.Add($"{ c.Code}: expected '{a.CurrencyName}' but found '{c.EnglishName}'");
-            }
-        }
-        differences.Should().HaveCount(0, string.Join(Environment.NewLine, differences));
-    }
-
-    [Fact(Skip = "For debugging.")]
-    public void WhenCompareCurrencies_ThenTheyShouldHaveTheSameNumber()
-    {
-        if (!FileFound)
-        {
-            return;
-        }
-
-        var differences = new List<string>();
-        foreach (var c in _definedCurrencies)
-        {
-            var found = _isoCurrencies.Where(x => x.Currency == c.Code).ToList();
-
-            if (found.Count == 0)
-            {
-                continue;
-            }
-            var a = found.First();
-            // ignore casing (for now)
-            if (!string.Equals(c.Number, a.CurrencyNumber, StringComparison.InvariantCultureIgnoreCase))
-            {
-                differences.Add($"{c.Code}: expected {a.CurrencyNumber} but found {c.Number}");
-            }
-        }
-        differences.Should().HaveCount(0, string.Join(Environment.NewLine, differences));
-    }
-
-    [Fact(Skip = "For debugging.")]
-    public void WhenCompareCurrencies_ThenTheyShouldHaveTheSameNumberOfMinorDigits()
-    {
-        if (!FileFound)
-        {
-            return;
-        }
-
-        var differences = new List<string>();
-        foreach (var c in _definedCurrencies)
-        {
-            var found = _isoCurrencies.Where(x => x.Currency == c.Code).ToList();
-
-            if (found.Count == 0)
-            {
-                continue;
-            }
-            var a = found.First();
-            if (!string.Equals(c.DecimalDigits.ToString(), a.CurrencyMinorUnits, StringComparison.InvariantCultureIgnoreCase))
-            {
-                if (c.DecimalDigits == -1 && a.CurrencyMinorUnits == "N.A.")
-                {
-                    continue;
-                }
-                differences.Add($"{c.Code}: expected {a.CurrencyMinorUnits} minor units but found {c.DecimalDigits}");
-            }
-        }
-        differences.Should().HaveCount(0, string.Join(Environment.NewLine, differences));
-    }
-
-    [Fact(Skip = "For debugging.")]
-    public async Task UpdateTheStoredIsoFileOnDisk()
-    {
-        using var client = new WebClient();
-        await client.DownloadFileTaskAsync(new Uri("https://www.currency-iso.org/dam/downloads/lists/list_one.xml"), FilePath);
-    }
+    private sealed record IsoCurrency(string Code, string Number, string MinorUnits);
 }

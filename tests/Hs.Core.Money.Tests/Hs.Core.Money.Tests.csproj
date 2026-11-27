@@ -4,4 +4,8 @@
     <ProjectReference Include="..\..\src\Hs.Core.Money\Hs.Core.Money.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Data\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

@@ -17,7 +17,8 @@ internal static class DefaultCurrencies
         new Currency("AFN", "971", 2, "Afghan afghani", "؋"),
         new Currency("ALL", "008", 2, "Albanian lek", "L"),
         new Currency("AMD", "051", 2, "Armenian dram", "֏"),
-        new Currency("ANG", "532", 2, "Netherlands Antillean guilder", "ƒ"),
+        new Currency("ANG", "532", 2, "Netherlands Antillean guilder", "ƒ", validTo: new DateTime(2025, 6, 30)), // replaced by XCG
+        new Currency("XCG", "532", 2, "Caribbean guilder", "Cg", validFrom: new DateTime(2025, 3, 31)),
         new Currency("AOA", "973", 2, "Angolan kwanza", "Kz"),
         new Currency("ARS", "032", 2, "Argentine peso", "$"),
         new Currency("AUD", "036", 2, "Australian dollar", "$"),
@@ -26,7 +27,7 @@ internal static class DefaultCurrencies
         new Currency("BAM", "977", 2, "Bosnia and Herzegovina convertible mark", "KM"),
         new Currency("BBD", "052", 2, "Barbados dollar", "$"),
         new Currency("BDT", "050", 2, "Bangladeshi taka", "৳"), // or Tk
-        new Currency("BGN", "975", 2, "Bulgarian lev", "лв."),
+        new Currency("BGN", "975", 2, "Bulgarian lev", "лв.", validTo: new DateTime(2026, 1, 31)), // replaced by EUR
         new Currency("BHD", "048", 3, "Bahraini dinar", "BD"), // or د.ب. (switched for unit tests to work)
         new Currency("BIF", "108", 0, "Burundian franc", "FBu"),
         new Currency("BMD", "060", 2, "Bermudian dollar", "$"),
@@ -38,7 +39,7 @@ internal static class DefaultCurrencies
         new Currency("BTN", "064", 2, "Bhutanese ngultrum", "Nu."),
         new Currency("BWP", "072", 2, "Botswana pula", "P"),
         new Currency("BYR", "974", 0, "Belarusian ruble", "Br", validTo: new DateTime(2016, 12, 31), validFrom: new DateTime(2000, 01, 01)),
-        new Currency("BYN", "974", 0, "Belarusian ruble", "Br", validFrom: new DateTime(2006, 06, 01)),
+        new Currency("BYN", "933", 2, "Belarusian ruble", "Br", validFrom: new DateTime(2016, 7, 1)),
         new Currency("BZD", "084", 2, "Belize dollar", "BZ$"),
         new Currency("CAD", "124", 2, "Canadian dollar", "$"),
         new Currency("CDF", "976", 2, "Congolese franc", "FC"),
@@ -51,9 +52,9 @@ internal static class DefaultCurrencies
         new Currency("COP", "170", 2, "Colombian peso", "$"),
         new Currency("COU", "970", 2, "Unidad de Valor Real", Currency.GenericCurrencySign), // ???
         new Currency("CRC", "188", 2, "Costa Rican colon", "₡"),
-        new Currency("CUC", "931", 2, "Cuban convertible peso", "CUC$"), // $ or CUC
+        new Currency("CUC", "931", 2, "Cuban convertible peso", "CUC$", validTo: new DateTime(2021, 12, 31)), // $ or CUC; withdrawn when Cuba unified its currencies
         new Currency("CUP", "192", 2, "Cuban peso", "$"), // or ₱ (obsolete?)
-        new Currency("CVE", "132", 0, "Cape Verde escudo", "$"),
+        new Currency("CVE", "132", 2, "Cape Verde escudo", "$"),
         new Currency("CZK", "203", 2, "Czech koruna", "Kč"),
         new Currency("DJF", "262", 0, "Djiboutian franc", "Fdj"),
         new Currency("DKK", "208", 2, "Danish krone", "kr."),
@@ -75,14 +76,14 @@ internal static class DefaultCurrencies
         new Currency("GYD", "328", 2, "Guyanese dollar", "$"), // or G$
         new Currency("HKD", "344", 2, "Hong Kong dollar", "HK$"), // or $
         new Currency("HNL", "340", 2, "Honduran lempira", "L"),
-        new Currency("HRK", "191", 2, "Croatian kuna", "kn"),
+        new Currency("HRK", "191", 2, "Croatian kuna", "kn", validTo: new DateTime(2023, 1, 14)), // replaced by EUR
         new Currency("HTG", "332", 2, "Haitian gourde", "G"),
         new Currency("HUF", "348", 2, "Hungarian forint", "Ft"),
         new Currency("IDR", "360", 2, "Indonesian rupiah", "Rp"),
         new Currency("ILS", "376", 2, "Israeli new shekel", "₪"),
         new Currency("INR", "356", 2, "Indian rupee", "₹"),
         new Currency("IQD", "368", 3, "Iraqi dinar", "د.ع"),
-        new Currency("IRR", "364", 0, "Iranian rial", "ريال"),
+        new Currency("IRR", "364", 2, "Iranian rial", "ريال"),
         new Currency("ISK", "352", 0, "Icelandic króna", "kr"),
         new Currency("JMD", "388", 2, "Jamaican dollar", "J$"), // or $
         new Currency("JOD", "400", 3, "Jordanian dinar", "د.ا.‏"),
@@ -91,13 +92,13 @@ internal static class DefaultCurrencies
         new Currency("KGS", "417", 2, "Kyrgyzstani som", "сом"),
         new Currency("KHR", "116", 2, "Cambodian riel", "៛"),
         new Currency("KMF", "174", 0, "Comorian Franc", "CF"), // COMOROS (THE)
-        new Currency("KPW", "408", 0, "North Korean won", "₩"),
+        new Currency("KPW", "408", 2, "North Korean won", "₩"),
         new Currency("KRW", "410", 0, "South Korean won", "₩"),
         new Currency("KWD", "414", 3, "Kuwaiti dinar", "د.ك"), // or K.D.
         new Currency("KYD", "136", 2, "Cayman Islands dollar", "$"),
         new Currency("KZT", "398", 2, "Kazakhstani tenge", "₸"),
-        new Currency("LAK", "418", 0, "Lao Kip", "₭"), // or ₭N,  LAO PEOPLE’S DEMOCRATIC REPUBLIC(THE), ISO says minor unit=2 but wiki syas Historically, one kip was divided into 100 att (ອັດ).
-        new Currency("LBP", "422", 0, "Lebanese pound", "ل.ل"),
+        new Currency("LAK", "418", 2, "Lao Kip", "₭"), // or ₭N; one kip is divided into 100 att (ອັດ)
+        new Currency("LBP", "422", 2, "Lebanese pound", "ل.ل"),
         new Currency("LKR", "144", 2, "Sri Lankan rupee", "Rs"), // or රු
         new Currency("LRD", "430", 2, "Liberian dollar", "$"), // or L$, LD$
         new Currency("LSL", "426", 2, "Lesotho loti", "L"), // L or M (pl.)
@@ -105,8 +106,8 @@ internal static class DefaultCurrencies
         new Currency("MAD", "504", 2, "Moroccan dirham", "د.م."),
         new Currency("MDL", "498", 2, "Moldovan leu", "L"),
         new Currency("MGA", "969", 1, "Malagasy ariary", "Ar", minorUnit: OneFifth),
-        new Currency("MKD", "807", 0, "Macedonian denar", "ден"),
-        new Currency("MMK", "104", 0, "Myanma kyat", "K"),
+        new Currency("MKD", "807", 2, "Macedonian denar", "ден"),
+        new Currency("MMK", "104", 2, "Myanma kyat", "K"),
         new Currency("MNT", "496", 2, "Mongolian tugrik", "₮"),
         new Currency("MOP", "446", 2, "Macanese pataca", "MOP$"),
         new Currency("MRU", "929", 1, "Mauritanian ouguiya", "UM", validFrom: new DateTime(2018, 01, 01), minorUnit: OneFifth),
@@ -143,7 +144,8 @@ internal static class DefaultCurrencies
         new Currency("SEK", "752", 2, "Swedish krona/kronor", "kr"),
         new Currency("SGD", "702", 2, "Singapore dollar", "S$"), // or $
         new Currency("SHP", "654", 2, "Saint Helena pound", "£"),
-        new Currency("SLL", "694", 0, "Sierra Leonean leone", "Le"),
+        new Currency("SLL", "694", 0, "Sierra Leonean leone", "Le", validTo: new DateTime(2023, 12, 31)), // replaced by SLE
+        new Currency("SLE", "925", 2, "Sierra Leonean leone", "Le", validFrom: new DateTime(2022, 7, 1)),
         new Currency("SOS", "706", 2, "Somali shilling", "S"), // or Sh.So.
         new Currency("SRD", "968", 2, "Surinamese dollar", "$"),
         new Currency("SSP", "728", 2, "South Sudanese pound", "£"), // not sure about symbol...
@@ -160,13 +162,14 @@ internal static class DefaultCurrencies
         new Currency("TWD", "901", 2, "New Taiwan dollar", "NT$"), // or $
         new Currency("TZS", "834", 2, "Tanzanian shilling", "x/y"), // or TSh
         new Currency("UAH", "980", 2, "Ukrainian hryvnia", "₴"),
-        new Currency("UGX", "800", 2, "Ugandan shilling", "USh"),
+        new Currency("UGX", "800", 0, "Ugandan shilling", "USh"),
         new Currency("USD", "840", 2, "United States dollar", "$"), // or US$
         new Currency("USN", "997", 2, "United States dollar (next day) (funds code)", "$"),
         new Currency("UYI", "940", 0, "Uruguay Peso en Unidades Indexadas (UI) (funds code)", Currency.GenericCurrencySign), // List two
         new Currency("UYU", "858", 2, "Uruguayan peso", "$"), // or $U
         new Currency("UZS", "860", 2, "Uzbekistan som", "лв"), // or сўм ?
         new Currency("VES", "928", 2, "Venezuelan Bolívar Soberano", "Bs.", validFrom: new DateTime(2018, 8, 20)), // or Bs.F. , Amendment 167 talks about delay but from multiple sources on the web the date seems to be 20 aug.
+        new Currency("VED", "926", 2, "Venezuelan digital bolívar", "Bs.D", validFrom: new DateTime(2021, 10, 1)),
         new Currency("VND", "704", 0, "Vietnamese dong", "₫"),
         new Currency("VUV", "548", 0, "Vanuatu vatu", "VT"),
         new Currency("WST", "882", 2, "Samoan tala", "WS$"), // sometimes SAT, ST or T
@@ -179,6 +182,7 @@ internal static class DefaultCurrencies
         new Currency("XBD", "958", NotApplicable, "European Unit of Account 17 (E.U.A.-17) (bond market unit)", Currency.GenericCurrencySign),
         new Currency("XCD", "951", 2, "East Caribbean dollar", "$"), // or EC$
         new Currency("XDR", "960", NotApplicable, "Special drawing rights", Currency.GenericCurrencySign),
+        new Currency("XAD", "396", 2, "Arab Accounting Dinar", Currency.GenericCurrencySign, validFrom: new DateTime(2025, 1, 1)), // unit of account of the Arab Monetary Fund
         new Currency("XOF", "952", 0, "CFA franc BCEAO", "CFA"),
         new Currency("XPD", "964", NotApplicable, "Palladium (one troy ounce)", Currency.GenericCurrencySign),
         new Currency("XPF", "953", 0, "CFP franc", "F"),
@@ -190,10 +194,11 @@ internal static class DefaultCurrencies
         new Currency("YER", "886", 2, "Yemeni rial", "﷼"), // or ر.ي.‏‏ ?
         new Currency("ZAR", "710", 2, "South African rand", "R"),
         new Currency("ZMW", "967", 2, "Zambian kwacha", "ZK"), // or ZMW
-        new Currency("ZWL", "932", 2, "Zimbabwean dollar", "$"),
+        new Currency("ZWL", "932", 2, "Zimbabwean dollar", "$", validTo: new DateTime(2024, 8, 31)), // replaced by ZWG
+        new Currency("ZWG", "924", 2, "Zimbabwe Gold", "ZiG", validFrom: new DateTime(2024, 4, 8)),
         new Currency("STN", "930", 2, "Dobra", "Db", validFrom: new DateTime(2018, 1, 1)), // New Currency of São Tomé and Príncipe from 1 Jan 2018 (Amendment 164)
         new Currency("STD", "678", 2, "Dobra", "Db", validTo: new DateTime(2018, 1, 1)), // To be replaced Currency of São Tomé and Príncipe from 1 Jan 2018 (Amendment 164),  inflation has rendered the cêntimo obsolete
-        new Currency("UYW", "927", 2, "Unidad Previsional", "Db", validFrom: new DateTime(2018, 8, 29)), // The Central Bank of Uruguay is applying for new Fund currency code (Amendment 169)
+        new Currency("UYW", "927", 4, "Unidad Previsional", "Db", validFrom: new DateTime(2018, 8, 29)), // The Central Bank of Uruguay is applying for new Fund currency code (Amendment 169)
 
         // Historic ISO-4217 currencies (list three)
         new Currency("VEF", "937", 2, "Venezuelan bolívar", "Bs.", CurrencyRegistry.HistoricNamespace, new DateTime(2018, 8, 20)), // replaced by VEF, The conversion rate is 1000 (old) Bolívar to 1 (new) Bolívar Soberano (1000:1). The expiration date of the current bolívar will be defined later and communicated by the Central Bank of Venezuela in due time.
