@@ -107,7 +107,7 @@ public class GivenIWantToAddAndSubstractAmount
 
     [Theory, MemberData(nameof(TestData))]
     [UseCulture("en-us")]
-    public void WhenUsingSubstractionOperatorWithDecimal_ThenAmountShouldBeAdded(decimal expected, decimal value2, decimal value1)
+    public void WhenUsingSubstractionOperatorWithDecimal_ThenAmountShouldBeSubtracted(decimal expected, decimal value2, decimal value1)
     {
         _output.WriteLine($"en-US : {CultureInfo.CurrentCulture.Name},{CultureInfo.CurrentUICulture.Name}");
         var money1 = new Amount(value1, "EUR");
@@ -117,7 +117,7 @@ public class GivenIWantToAddAndSubstractAmount
 
         result1.Should().Be(new Amount(expected, "EUR"));
         result1.Should().NotBeSameAs(money1);
-        result2.Should().Be(new Amount(expected, "EUR"));
+        result2.Should().Be(new Amount(-expected, "EUR")); // value2 - money1 is the negation of money1 - value2
         result2.Should().NotBeSameAs(money1);
     }
 
@@ -324,4 +324,21 @@ public class GivenIWantToMultiplyAndDivideAmount
 
         result.Should().Be(expected); // ratio
     }
+}
+
+public class GivenADecimalOnTheLeft
+{
+    private readonly Amount _threeDollars = new(3m, Currency.FromCode("USD"));
+
+    [Fact]
+    public void WhenSubtractingAnAmountFromADecimal_ThenTheAmountIsTakenFromTheDecimal() =>
+        (10m - _threeDollars).Should().Be(new Amount(7m, Currency.FromCode("USD")));
+
+    [Fact]
+    public void WhenAddingAnAmountToADecimal_ThenTheOrderDoesNotMatter() =>
+        (10m + _threeDollars).Should().Be(_threeDollars + 10m);
+
+    [Fact]
+    public void WhenMultiplyingADecimalByAnAmount_ThenTheOrderDoesNotMatter() =>
+        (2m * _threeDollars).Should().Be(_threeDollars * 2m);
 }

@@ -37,7 +37,7 @@ public readonly partial record struct Amount
     /// <param name="left">A <see cref="decimal"/> object on the left side.</param>
     /// <param name="right">A <see cref="Amount"/> object on the right side.</param>
     /// <returns>The <see cref="Amount"/> result of subtracting right from left.</returns>
-    public static Amount operator -(decimal left, Amount right) => Subtract(right, left);
+    public static Amount operator -(decimal left, Amount right) => new(left - right.Value, right.Currency);
 
     /// <summary>Multiplies the <see cref="Amount"/> value by the given value.</summary>
     /// <param name="left">A <see cref="Amount"/> object on the left side.</param>
