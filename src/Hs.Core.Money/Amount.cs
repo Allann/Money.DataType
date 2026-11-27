@@ -79,7 +79,7 @@ public readonly partial record struct Amount
     public Amount(decimal value, Currency currency, MidpointRounding rounding)
     {
         Currency = currency;
-        Value = Round(value, currency, rounding);
+        Value = currency.Round(value, rounding);
     }
     /// <summary>Initializes a new instance of the <see cref="Amount"/> struct, based on the current culture.</summary>
     /// <param name="value">The Amount of money as <see langword="double"/> or <see langword="float"/> (float is implicitly
@@ -221,14 +221,6 @@ public readonly partial record struct Amount
         amount = Value;
         currency = Currency;
     }
-
-    private static decimal Round(decimal amount, Currency currency, MidpointRounding rounding) =>
-        currency.DecimalDigits switch
-        {
-            DefaultCurrencies.NotApplicable => Math.Round(amount),
-            DefaultCurrencies.Z07 => Math.Round(amount / 0.2m, 0, rounding) * 0.2m, // divided into five subunits rather than by a power of ten
-            _ => Math.Round(amount, (int)currency.DecimalDigits, rounding),
-        };
 
     private static void AssertIsSameCurrency(Amount left, Amount right)
     {

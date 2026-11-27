@@ -293,7 +293,7 @@ public class GivenIWantToKnowMinorUnit
     {
         _xau.MajorUnit.Should().Be(1m);
         _xau.MinorUnit.Should().Be(1m);
-        _xau.DecimalDigits.Should().Be(-1); // DOT
+        _xau.DecimalDigits.Should().Be(0); // ISO 4217 lists gold without minor units ("N.A.")
     }
 
     [Fact]
@@ -304,7 +304,7 @@ public class GivenIWantToKnowMinorUnit
         // is used. E.g. 1.2 UM.
         _mga.MajorUnit.Should().Be(1m);
         _mga.MinorUnit.Should().Be(0.2m);
-        _mga.DecimalDigits.Should().Be(0.69897000433601880478626110527551); // Z07:  Math.Log10(5);
+        _mga.DecimalDigits.Should().Be(1);
     }
 }
 

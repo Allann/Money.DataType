@@ -17,6 +17,9 @@ public readonly record struct Currency
 {
     internal const string IsoNamespace = "ISO-4217";
 
+    /// <summary>The most digits a <see cref="decimal"/> can hold after the decimal point.</summary>
+    internal const int MaxDecimalDigits = 28;
+
     /// <summary>The generic currency sign (¤), used when a currency has no sign of its own.</summary>
     /// <remarks>See https://en.wikipedia.org/wiki/Currency_sign_(typography).</remarks>
     public static string GenericCurrencySign => "¤";
@@ -24,28 +27,34 @@ public readonly record struct Currency
     internal static readonly CurrencyRegistry Registry = new();
 
     /// <summary>Initializes a new currency. Missing names and numbers become empty, a missing symbol becomes <see cref="GenericCurrencySign"/>.</summary>
+    /// <param name="minorUnit">The smallest unit, when it isn't a power of ten: 0.2 for a currency divided into fifths.
+    /// Defaults to 10 to the power of -<paramref name="decimalDigits"/>, e.g. 0.01 for two digits.</param>
     /// <exception cref="ArgumentException"><paramref name="code"/> or <paramref name="namespace"/> is null or whitespace.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="decimalDigits"/> is negative (other than "not applicable").</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="decimalDigits"/> is outside 0-28, or <paramref name="minorUnit"/> isn't positive.</exception>
     internal Currency(
         string code,
         string? number,
-        double decimalDigits,
+        int decimalDigits,
         string? englishName,
         string? symbol,
         string @namespace = IsoNamespace,
         DateTime? validTo = null,
-        DateTime? validFrom = null)
+        DateTime? validFrom = null,
+        decimal? minorUnit = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(code);
         ArgumentException.ThrowIfNullOrWhiteSpace(@namespace);
-        if (decimalDigits < 0 && decimalDigits != DefaultCurrencies.NotApplicable)
+        ArgumentOutOfRangeException.ThrowIfNegative(decimalDigits);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(decimalDigits, MaxDecimalDigits);
+        if (minorUnit is <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(decimalDigits), "DecimalDigits must be greater than or equal to zero.");
+            throw new ArgumentOutOfRangeException(nameof(minorUnit), "The minor unit must be positive.");
         }
 
         Code = code;
         Number = number ?? string.Empty;
         DecimalDigits = decimalDigits;
+        MinorUnit = minorUnit ?? PowerOfTen(-decimalDigits);
         EnglishName = englishName ?? string.Empty;
         Symbol = symbol ?? GenericCurrencySign;
         Namespace = @namespace;
@@ -79,18 +88,12 @@ public readonly record struct Currency
     /// <summary>The namespace the <see cref="Code"/> belongs to, e.g. "ISO-4217".</summary>
     public string Namespace { get; }
 
-    /// <summary>The number of digits after the decimal separator.</summary>
+    /// <summary>The number of digits shown after the decimal separator, e.g. 2 for the euro and 0 for the yen.</summary>
     /// <remarks>
-    /// <para>
-    /// For example, the default number of fraction digits for the US Dollar and Euro is 2, while for the Japanese Yen it's 0.
-    /// In the case of pseudo-currencies, such as Gold or IMF Special Drawing Rights, -1 is returned.
-    /// </para>
-    /// <para>
-    /// The Malagasy ariary and the Mauritanian ouguiya are technically divided into five subunits (the iraimbilanja and
-    /// khoum respectively), rather than by a power of ten. To represent this in decimal: 5 is 10 to the power of log(5) = 0.69897...
-    /// </para>
+    /// Pseudo-currencies such as gold, which ISO 4217 lists without minor units ("N.A."), have 0.
+    /// The Malagasy ariary and Mauritanian ouguiya are divided into fifths, so have 1 digit and a <see cref="MinorUnit"/> of 0.2.
     /// </remarks>
-    public double DecimalDigits { get; }
+    public int DecimalDigits { get; }
 
     /// <summary>The first day the currency is valid, if it has one.</summary>
     public DateTime? ValidFrom { get; }
@@ -101,9 +104,8 @@ public readonly record struct Currency
     /// <summary>The major currency unit, always 1.</summary>
     public decimal MajorUnit => 1;
 
-    /// <summary>The smallest unit of the currency, e.g. 0.01 for the euro.</summary>
-    public decimal MinorUnit
-        => DecimalDigits == DefaultCurrencies.NotApplicable ? MajorUnit : new decimal(1 / Math.Pow(10, DecimalDigits));
+    /// <summary>The smallest unit of the currency, e.g. 0.01 for the euro, 1 for the yen and 0.2 for the Malagasy ariary.</summary>
+    public decimal MinorUnit { get; }
 
     /// <summary>Whether the currency is valid today.</summary>
     public bool IsValid => IsValidOn(DateTime.Today);
@@ -168,4 +170,13 @@ public readonly record struct Currency
 
     /// <summary>The currency code, e.g. "EUR".</summary>
     public override string ToString() => Code;
+
+    /// <summary>Rounds <paramref name="amount"/> to a whole number of <see cref="MinorUnit"/>s.</summary>
+    internal decimal Round(decimal amount, MidpointRounding rounding) =>
+        MinorUnit == PowerOfTen(-DecimalDigits)
+            ? Math.Round(amount, DecimalDigits, rounding)
+            : Math.Round(amount / MinorUnit, rounding) * MinorUnit;
+
+    /// <summary>10 to the power of <paramref name="exponent"/> (0 or negative), exactly: <c>new decimal(1, 0, 0, false, 2)</c> is 0.01.</summary>
+    private static decimal PowerOfTen(int exponent) => new(1, 0, 0, false, (byte)-exponent);
 }

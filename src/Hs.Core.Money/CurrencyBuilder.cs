@@ -34,7 +34,11 @@ public class CurrencyBuilder
     public string? ISONumber { get; set; }
 
     /// <summary>Gets or sets the number of digits after the decimal separator.</summary>
-    public double DecimalDigits { get; set; }
+    public int DecimalDigits { get; set; }
+
+    /// <summary>Gets or sets the smallest unit, when it isn't a power of ten, e.g. 0.2 for a currency divided into fifths.</summary>
+    /// <remarks>Leave it <see langword="null"/> for the usual 10 to the power of -<see cref="DecimalDigits"/>.</remarks>
+    public decimal? MinorUnit { get; set; }
 
     /// <summary>Gets the namespace of the currency.</summary>
     public string Namespace { get; }
@@ -83,7 +87,7 @@ public class CurrencyBuilder
             Symbol = Currency.GenericCurrencySign;
         }
 
-        return new Currency(Code, ISONumber, DecimalDigits, EnglishName, Symbol, Namespace, ValidTo, ValidFrom);
+        return new Currency(Code, ISONumber, DecimalDigits, EnglishName, Symbol, Namespace, ValidTo, ValidFrom, MinorUnit);
     }
 
     /// <summary>Registers the current <see cref="CurrencyBuilder"/> object as a custom currency for the current AppDomain.</summary>
@@ -110,6 +114,7 @@ public class CurrencyBuilder
         Symbol = currency.Symbol;
         ISONumber = currency.Number;
         DecimalDigits = currency.DecimalDigits;
+        MinorUnit = currency.MinorUnit;
         ValidFrom = currency.ValidFrom;
         ValidTo = currency.ValidTo;
     }

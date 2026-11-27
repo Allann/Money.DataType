@@ -5,17 +5,11 @@ namespace Hs.Core.Money;
 /// </summary>
 internal static class DefaultCurrencies
 {
-    /// <summary>
-    /// The Malagasy ariary and the Mauritanian ouguiya are technically divided into five subunits (the iraimbilanja and
-    /// khoum respectively), rather than by a power of ten. The coins display "1/5" on their face and are referred to as
-    /// a "fifth" (Khoum/cinquième). These are not used in practice, but when written out, a single significant digit is
-    /// used. E.g. 1.2 UM.
-    /// To represent this in decimal we do the following steps: 5 is 10 to the power of log(5) = 0.69897... ~ 0.7.
-    /// </summary>
-    internal const double Z07 = 0.69897000433601880478626110527551; // Math.Log10(5);
+    /// <summary>ISO 4217 lists some currencies, such as gold, without minor units ("N.A."); they're whole units only.</summary>
+    private const int NotApplicable = 0;
 
-    /// <summary>Used for indication that the number of decimal digits doesn't matter, for example for gold or silver.</summary>
-    internal const double NotApplicable = -1;
+    /// <summary>The Malagasy ariary and Mauritanian ouguiya are divided into five subunits, not a power of ten.</summary>
+    private const decimal OneFifth = 0.2m;
 
     private static readonly object _obj = new();
     private static IList<Currency>? _currencies;
@@ -135,12 +129,12 @@ internal static class DefaultCurrencies
                 new Currency("LYD", "434", 3, "Libyan dinar", "ل.د"), // or LD
                 new Currency("MAD", "504", 2, "Moroccan dirham", "د.م."),
                 new Currency("MDL", "498", 2, "Moldovan leu", "L"),
-                new Currency("MGA", "969", Z07, "Malagasy ariary", "Ar"),  // divided into five subunits rather than by a power of ten. 5 is 10 to the power of 0.69897...
+                new Currency("MGA", "969", 1, "Malagasy ariary", "Ar", minorUnit: OneFifth),
                 new Currency("MKD", "807", 0, "Macedonian denar", "ден"),
                 new Currency("MMK", "104", 0, "Myanma kyat", "K"),
                 new Currency("MNT", "496", 2, "Mongolian tugrik", "₮"),
                 new Currency("MOP", "446", 2, "Macanese pataca", "MOP$"),
-                new Currency("MRU", "929", Z07, "Mauritanian ouguiya", "UM", validFrom: new DateTime(2018, 01, 01)), // divided into five subunits rather than by a power of ten. 5 is 10 to the power of 0.69897...
+                new Currency("MRU", "929", 1, "Mauritanian ouguiya", "UM", validFrom: new DateTime(2018, 01, 01), minorUnit: OneFifth),
                 new Currency("MUR", "480", 2, "Mauritian rupee", "Rs"),
                 new Currency("MVR", "462", 2, "Maldivian rufiyaa", "Rf"), // or , MRf, MVR, .ރ or /-
                 new Currency("MWK", "454", 2, "Malawi kwacha", "MK"),
@@ -228,7 +222,7 @@ internal static class DefaultCurrencies
 
                 // Historic ISO-4217 currencies (list three)
                 new Currency("VEF", "937", 2, "Venezuelan bolívar", "Bs.", "ISO-4217-HISTORIC", new DateTime(2018, 8, 20)), // replaced by VEF, The conversion rate is 1000 (old) Bolívar to 1 (new) Bolívar Soberano (1000:1). The expiration date of the current bolívar will be defined later and communicated by the Central Bank of Venezuela in due time.
-                new Currency("MRO", "478", Z07, "Mauritanian ouguiya", "UM", "ISO-4217-HISTORIC", new DateTime(2018, 1, 1)), // replaced by MRU
+                new Currency("MRO", "478", 1, "Mauritanian ouguiya", "UM", "ISO-4217-HISTORIC", new DateTime(2018, 1, 1), minorUnit: OneFifth), // replaced by MRU
                 new Currency("ESA", "996", NotApplicable, "Spanish peseta (account A)", "Pta", "ISO-4217-HISTORIC", new DateTime(2002, 3, 1)), // replaced by ESP (EUR)
                 new Currency("ESB", "995", NotApplicable, "Spanish peseta (account B)", "Pta", "ISO-4217-HISTORIC", new DateTime(2002, 3, 1)), // replaced by ESP (EUR)
                 new Currency("LTL", "440", 2, "Lithuanian litas", "Lt", "ISO-4217-HISTORIC", new DateTime(2014, 12, 31), new DateTime(1993, 1, 1)), // replaced by EUR

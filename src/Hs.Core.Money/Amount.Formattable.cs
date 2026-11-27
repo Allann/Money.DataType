@@ -62,7 +62,7 @@ public readonly partial record struct Amount : IFormattable
             };
         }
 
-        numberFormatInfo.CurrencyDecimalDigits = (int)currency.Value.DecimalDigits;
+        numberFormatInfo.CurrencyDecimalDigits = currency.Value.DecimalDigits;
         numberFormatInfo.CurrencySymbol = currency.Value.Symbol ?? string.Empty;
 
         if (!useCode)
