@@ -139,11 +139,10 @@ public class GivenIWantCurrencyFromRegionOrCulture
     }
 
     [Fact]
-    public void WhenUsingCurrentCurrency_ThenCreatingShouldSucceed()
+    public void WhenUsingCurrentCurrency_ThenItIsTheCurrentCulturesCurrency()
     {
-        var currency = Currency.CurrentCurrency;
-
-        currency.Should().Be(Currency.FromRegion(RegionInfo.CurrentRegion));
+        // The current culture's region, not the operating system's: they differ on CI runners (en-AU culture, US region).
+        Currency.CurrentCurrency.Should().Be(Currency.FromCulture(CultureInfo.CurrentCulture));
     }
 }
 
