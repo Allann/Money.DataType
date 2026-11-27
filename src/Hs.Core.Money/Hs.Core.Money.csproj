@@ -18,5 +18,8 @@
       <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Hs.Core\Hs.Core.csproj" />
+  </ItemGroup>
 
 </Project>

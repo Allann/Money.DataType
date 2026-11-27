@@ -122,6 +122,11 @@ namespace Hs.Core.Money
         {
             // TODO: ICustomFormat : http://msdn.microsoft.com/query/dev12.query?appId=Dev12IDEF1&l=EN-US&k=k(System.IFormatProvider);k(TargetFrameworkMoniker-.NETPortable,Version%3Dv4.6);k(DevLang-csharp)&rd=true
 
+            if (format == "W")
+            {
+                return ToWords(formatProvider as CultureInfo ?? CultureInfo.CurrentCulture).Value;
+            }
+
             // TODO: Hacked solution, solve with better implementation
             IFormatProvider provider;
             if (!string.IsNullOrWhiteSpace(format) && format.StartsWith("I", StringComparison.Ordinal) && format.Length >= 1 && format.Length <= 2)
