@@ -72,7 +72,7 @@ public class CurrencyBuilder
             throw new ArgumentNullException(nameof(@namespace));
         }
 
-        return !Currency.Registry.TryRemove(code, @namespace, out var currency)
+        return !CurrencyRegistry.TryRemove(code, @namespace, out var currency)
             ? throw new ArgumentException($"code {code} specifies a currency that is not found in the {nameof(@namespace)} {@namespace}.")
             : currency;
     }
@@ -100,7 +100,7 @@ public class CurrencyBuilder
     public Currency Register()
     {
         var currency = Build();
-        return !Currency.Registry.TryAdd(Code, Namespace, currency)
+        return !CurrencyRegistry.TryAdd(Code, Namespace, currency)
             ? throw new InvalidOperationException("The custom currency is already registered.")
             : currency;
     }

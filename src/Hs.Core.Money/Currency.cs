@@ -24,8 +24,6 @@ public readonly record struct Currency
     /// <remarks>See https://en.wikipedia.org/wiki/Currency_sign_(typography).</remarks>
     public static string GenericCurrencySign => "¤";
 
-    internal static readonly CurrencyRegistry Registry = new();
-
     /// <summary>Initializes a new currency. Missing names and numbers become empty, a missing symbol becomes <see cref="GenericCurrencySign"/>.</summary>
     /// <param name="minorUnit">The smallest unit, when it isn't a power of ten: 0.2 for a currency divided into fifths.
     /// Defaults to 10 to the power of -<paramref name="decimalDigits"/>, e.g. 0.01 for two digits.</param>
@@ -125,7 +123,7 @@ public readonly record struct Currency
     /// <exception cref="ArgumentNullException"><paramref name="code"/> or <paramref name="namespace"/> is null or whitespace.</exception>
     /// <exception cref="ArgumentException"><paramref name="code"/> is not known in <paramref name="namespace"/>.</exception>
     public static Currency FromCode(string code, string @namespace) =>
-        Registry.TryGet(code, @namespace, out var currency)
+        CurrencyRegistry.TryGet(code, @namespace, out var currency)
             ? currency
             : throw new ArgumentException($"{code} is an unknown {@namespace} currency code", nameof(code));
 
@@ -154,7 +152,7 @@ public readonly record struct Currency
         string.IsNullOrWhiteSpace(name) ? throw new ArgumentNullException(nameof(name)) : FromRegion(new RegionInfo(name));
 
     /// <summary>Gets all registered currencies.</summary>
-    public static IEnumerable<Currency> GetAllCurrencies() => Registry.GetAllCurrencies();
+    public static IEnumerable<Currency> GetAllCurrencies() => CurrencyRegistry.GetAllCurrencies();
 
     /// <summary>Deconstructs the currency into its code, number and symbol.</summary>
     public void Deconstruct(out string code, out string number, out string symbol)
