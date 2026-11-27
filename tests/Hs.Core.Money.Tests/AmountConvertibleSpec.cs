@@ -1,6 +1,6 @@
 using System.Threading;
 
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 
 namespace Hs.Core.Money.Tests.AmountConvertibleSpec

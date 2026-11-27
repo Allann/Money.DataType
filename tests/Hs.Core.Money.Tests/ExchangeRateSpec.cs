@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 using Hs.Core.Money.Tests.Helpers;
 

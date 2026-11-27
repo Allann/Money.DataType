@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using Hs.Core.Money.Tests.Helpers;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Hs.Core.Money.Tests.AmountBinaryOperatorsSpec
 {

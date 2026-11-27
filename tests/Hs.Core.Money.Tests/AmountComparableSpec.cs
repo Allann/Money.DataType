@@ -1,5 +1,5 @@
 using System;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 
 namespace Hs.Core.Money.Tests.AmountComparableSpec

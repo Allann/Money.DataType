@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Hs.Core.Money.Extensions;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 
 namespace Hs.Core.Money.Serialization.Tests
@@ -26,6 +26,16 @@ namespace Hs.Core.Money.Serialization.Tests
 
                 clone.Should().Be(money);
             }
+
+            [Fact]
+            public void WhenUsingSystemTextJsonDirectly_ThenThisShouldSucceed()
+            {
+                var money = new Amount(765.43m, Currency.FromCode("EUR"));
+                var json = System.Text.Json.JsonSerializer.Serialize(money);
+                var clone = System.Text.Json.JsonSerializer.Deserialize<Amount>(json);
+
+                clone.Should().Be(money);
+            }
         }
 
         public class GivenIWantToDeserializeAmountWithJsonSerializer
@@ -41,24 +51,23 @@ namespace Hs.Core.Money.Serialization.Tests
             public static IEnumerable<object[]> InvalidJsonData => new[]
             {
                 new object[] { "{ value: '200' }" },
-                new object[] { "{ value: 200 }" },
             };
 
             public static IEnumerable<object[]> ValidNestedJsonData => new[]
             {
-                new object[] { $"{{ cash: {{ value: '200', currency: '{_currentCultureCode}' }} }}", },
-                new object[] { $"{{ cash: {{ value: 200, currency: '{_currentCultureCode}' }} }}" },
-                new object[] { $"{{ cash: {{ currency: '{_currentCultureCode}', value: 200 }} }}" },
-                new object[] { $"{{ cash: {{ currency: '{_currentCultureCode}', value: '200' }} }}" }
+                new object[] { $"{{ \"cash\": {{ \"value\": \"200\", \"currency\": \"{_currentCultureCode}\" }} }}", },
+                new object[] { $"{{ \"cash\": {{ \"value\": 200, \"currency\": \"{_currentCultureCode}\" }} }}" },
+                new object[] { $"{{ \"cash\": {{ \"currency\": \"{_currentCultureCode}\", \"value\": 200 }} }}" },
+                new object[] { $"{{ \"cash\": {{ \"currency\": \"{_currentCultureCode}\", \"value\": \"200\" }} }}" }
             };
 
             public static IEnumerable<object[]> ValidNestedNullableJsonData => new[]
             {
-                new object[] { $"{{ cash: {{ value: '200', currency: '{_currentCultureCode}' }} }}", },
-                new object[] { $"{{ cash: {{ value: 200, currency: '{_currentCultureCode}' }} }}" },
-                new object[] { $"{{ cash: {{ currency: '{_currentCultureCode}', value: 200 }} }}" },
-                new object[] { $"{{ cash: {{ currency: '{_currentCultureCode}', value: '200' }} }}" },
-                new object[] { $"{{ cash: null }}" },
+                new object[] { $"{{ \"cash\": {{ \"value\": \"200\", \"currency\": \"{_currentCultureCode}\" }} }}", },
+                new object[] { $"{{ \"cash\": {{ \"value\": 200, \"currency\": \"{_currentCultureCode}\" }} }}" },
+                new object[] { $"{{ \"cash\": {{ \"currency\": \"{_currentCultureCode}\", \"value\": 200 }} }}" },
+                new object[] { $"{{ \"cash\": {{ \"currency\": \"{_currentCultureCode}\", \"value\": \"200\" }} }}" },
+                new object[] { "{ \"cash\": null }" },
             };
 
             [Theory]
@@ -77,7 +86,23 @@ namespace Hs.Core.Money.Serialization.Tests
             public void WhenDeserializingWithInvalidJson_ThenThisShouldFail(string json)
             {
                 Action a = () => json.FromJson<Amount>();
-                a.Should().Throw<ArgumentNullException>();
+                a.Should().Throw<System.Text.Json.JsonException>();
+            }
+
+            [Fact]
+            public void WhenDeserializingWithoutCurrency_ThenThisShouldFail()
+            {
+                Action action = () => "{\"value\":200}".FromJson<Amount>();
+                action.Should().Throw<ArgumentNullException>();
+            }
+
+            [Fact]
+            public void WhenExcludingNullProperties_ThenNullPropertiesShouldNotBeSerialized()
+            {
+                var item = new TypeWithNullableMoneyProperty { Cash = null };
+
+                item.ToJson(includeNull: false).Should().NotContain("cash");
+                item.ToJson().Should().Contain("\"cash\":null");
             }
 
             private class TypeWithMoneyProperty

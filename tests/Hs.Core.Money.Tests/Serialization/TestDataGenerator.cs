@@ -17,25 +17,22 @@ namespace Hs.Core.Money.Tests.Serialization
             Add("{ \"value\": \"234.25\", \"currency\": \"EUR\" }", amount); // camelCase, Value as string
             Add("{ \"currency\": \"EUR\", \"value\": \"234.25\" }", amount); // camelCase, Value as string, Reversed members
 
-            // Members no quotation marks
-            Add("{ Value: 234.25, Currency: \"EUR\" }", amount); // PascalCase, Value as number
-            Add("{ Currency: \"EUR\", Value: 234.25 }", amount); // PascalCase, Value as number, Reversed members
-            Add("{ Value: \"234.25\", Currency: \"EUR\" }", amount); // PascalCase, Value as string
-            Add("{ Currency: \"EUR\", Value: \"234.25\" }", amount); // PascalCase, Value as string
-            Add("{ value: 234.25, currency: \"EUR\" }", amount); // camelCase, Value as number
-            Add("{ currency: \"EUR\", value: 234.25 }", amount); // camelCase, Value as number, Reversed members
-            Add("{ value: \"234.25\", currency: \"EUR\" }", amount); // camelCase, Value as string, Members no quotation marks
-            Add("{ currency: \"EUR\", value: \"234.25\" }", amount); // camelCase, Value as string, Reversed members
-
-            // Members no quotation marks, Values single quotes
-            Add("{ Value: 234.25, Currency: 'EUR' }", amount); // PascalCase, Value as number, 
-            Add("{ Currency: 'EUR', Value: 234.25 }", amount); // PascalCase, Value as number, Reversed members
-            Add("{ Value: '234.25', Currency: 'EUR' }", amount); // PascalCase, Value as string
-            Add("{ Currency: 'EUR', Value: '234.25' }", amount); // PascalCase, Value as string, Reversed members
-            Add("{ value: 234.25, currency: 'EUR' }", amount); // camelCase, Value as number
-            Add("{ currency: 'EUR', value: 234.25 }", amount); // camelCase, Value as number, Reversed members
-            Add("{ value: '234.25', currency: 'EUR' }", amount); // camelCase, Value as string
-            Add("{ currency: 'EUR', value: '234.25' }", amount); // camelCase, Value as string, Reversed members
+            Add("{ \"VALUE\": 234.25, \"CURRENCY\": \"EUR\" }", amount);
+            Add("{ \"CURRENCY\": \"EUR\", \"VALUE\": 234.25 }", amount);
+            Add("{ \"VALUE\": \"234.25\", \"CURRENCY\": \"EUR\" }", amount);
+            Add("{ \"CURRENCY\": \"EUR\", \"VALUE\": \"234.25\" }", amount);
+            Add("{ \"Value\": 234.25, \"Currency\": { \"Code\": \"EUR\" } }", amount);
+            Add("{ \"Currency\": { \"Code\": \"EUR\" }, \"Value\": 234.25 }", amount);
+            Add("{ \"Value\": \"234.25\", \"Currency\": { \"Code\": \"EUR\" } }", amount);
+            Add("{ \"Currency\": { \"Code\": \"EUR\" }, \"Value\": \"234.25\" }", amount);
+            Add("{ \"value\": 234.25, \"currency\": { \"code\": \"EUR\" } }", amount);
+            Add("{ \"currency\": { \"code\": \"EUR\" }, \"value\": 234.25 }", amount);
+            Add("{ \"value\": \"234.25\", \"currency\": { \"code\": \"EUR\" } }", amount);
+            Add("{ \"currency\": { \"code\": \"EUR\" }, \"value\": \"234.25\" }", amount);
+            Add("{ \"Value\": 234.25, \"Currency\": { \"Code\": \"EUR\", \"Namespace\": \"ISO-4217\" } }", amount);
+            Add("{ \"Currency\": { \"Code\": \"EUR\", \"Namespace\": \"ISO-4217\" }, \"Value\": 234.25 }", amount);
+            Add("{ \"Value\": \"234.25\", \"Currency\": { \"Code\": \"EUR\", \"Namespace\": \"ISO-4217\" } }", amount);
+            Add("{ \"Currency\": { \"Code\": \"EUR\", \"Namespace\": \"ISO-4217\" }, \"Value\": \"234.25\" }", amount);
 
             // Currency with namespace
             Add("{ \"Value\": 234.25, \"Currency\": \"EUR\", \"Namespace\": \"ISO-4217\" }", amount); // PascalCase, Value as number

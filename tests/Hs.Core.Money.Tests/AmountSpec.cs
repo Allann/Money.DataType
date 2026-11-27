@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
-
-using Xunit.Abstractions;
 
 namespace Hs.Core.Money.Tests.AmountSpec
 {

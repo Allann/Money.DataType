@@ -1,6 +1,5 @@
-﻿using System.Diagnostics;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Hs.Core.Money.Extensions
 {
@@ -9,31 +8,32 @@ namespace Hs.Core.Money.Extensions
     /// </summary>
     public static class JsonExtensions
     {
-        private static JsonSerializerSettings GetSettings(bool includeNull = true)
+        private static JsonSerializerOptions GetSettings(bool includeNull = true)
         {
-            return new JsonSerializerSettings
+            return new JsonSerializerOptions
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = includeNull ? NullValueHandling.Include : NullValueHandling.Ignore,
-                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true,
+                DefaultIgnoreCondition = includeNull
+                    ? JsonIgnoreCondition.Never
+                    : JsonIgnoreCondition.WhenWritingNull
             };
         }
 
         /// <summary>
-        /// Serialize object into a valid Json string using NewtonSoft.Json
+        /// Serialize object into a valid JSON string using System.Text.Json.
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
         /// <param name="obj">Object being serialized</param>
-        /// <param name="includeNull">Flag to determine if null properties will be serialized</param>
         /// <returns>Json string representation of the object</returns>
-        public static string ToJson<T>(this T obj)            
+        public static string ToJson<T>(this T obj)
         {
             return ToJson(obj, true);
         }
 
         /// <summary>
-        /// Serialize object into a valid Json string using NewtonSoft.Json
+        /// Serialize object into a valid JSON string using System.Text.Json.
         /// </summary>
         /// <typeparam name="T">Type of object to serialize</typeparam>
         /// <param name="obj">Object being serialized</param>
@@ -41,26 +41,18 @@ namespace Hs.Core.Money.Extensions
         /// <returns>Json string representation of the object</returns>
         public static string ToJson<T>(this T obj, bool includeNull)
         {
-            var settings = GetSettings(includeNull);
-            return JsonConvert.SerializeObject(obj, settings);
+            return JsonSerializer.Serialize(obj, GetSettings(includeNull));
         }
 
         /// <summary>
-        /// Deserialize a valid json string into it object type
+        /// Deserialize a valid JSON string into its object type.
         /// </summary>
-        /// <typeparam name="T">Type of object to serialize</typeparam>
+        /// <typeparam name="T">Type of object to deserialize</typeparam>
         /// <param name="json">Json string representing the object</param>
         /// <returns>Object of the type specified</returns>
         public static T? FromJson<T>(this string json)
         {
-            ITraceWriter traceWriter = new MemoryTraceWriter();
-            var settings = GetSettings();
-            settings.TraceWriter = traceWriter;
-            
-            var data = JsonConvert.DeserializeObject<T>(json, settings);
-            Debug.WriteLine(traceWriter);
-
-            return data;
+            return JsonSerializer.Deserialize<T>(json, GetSettings());
         }
     }
 }

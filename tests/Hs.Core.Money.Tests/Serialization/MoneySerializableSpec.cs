@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Hs.Core.Money.Extensions;
 using Hs.Core.Money.Tests.Serialization;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 
 namespace Hs.Core.Money.Serialization.Tests.AmountSerializableSpec

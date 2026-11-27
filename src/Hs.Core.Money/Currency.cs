@@ -10,6 +10,7 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using System.Text.Json.Serialization;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Hs.Core.Money.Tests")]
 [assembly: CLSCompliant(true)]
@@ -21,6 +22,7 @@ namespace Hs.Core.Money
     [Serializable]
     [DebuggerDisplay("{" + nameof(Code) + "}")]
     [TypeConverter(typeof(CurrencyTypeConverter))]
+    [JsonConverter(typeof(CurrencyJsonConverter))]
     public struct Currency : IEquatable<Currency>, IXmlSerializable, ISerializable
     {
         private const string DefaultNamespace = "ISO-4217";
@@ -35,7 +37,7 @@ namespace Hs.Core.Money
 
         /// <summary>Initializes a new instance of the <see cref="Currency" /> struct.</summary>
         /// <param name="code">The code.</param>
-        /// <param name="namespace">The namepspace.</param>
+        /// <param name="namespace">The namespace.</param>
         /// <remarks>Used in serialization.</remarks>
         internal Currency(string code, string @namespace = DefaultNamespace)
         {

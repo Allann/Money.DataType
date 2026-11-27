@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Hs.Core.Money
 {
@@ -11,6 +11,7 @@ namespace Hs.Core.Money
     /// various types of Currency. Amount will hold the <see cref="Currency"/> and Value of monetary values,
     /// and ensure that two different currencies cannot be combined arithmetically.
     /// </remarks>
+    [JsonConverter(typeof(AmountJsonConverter))]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Amount : IEquatable<Amount>
     {
@@ -34,7 +35,6 @@ namespace Hs.Core.Money
         /// (<see cref="MidpointRounding"/>). The behavior of this method follows IEEE Standard 754, section 4. This
         /// kind of rounding is sometimes called rounding to nearest, or banker's rounding. It minimizes rounding errors that
         /// result from consistently rounding a midpoint value in a single direction.</remarks>
-        [JsonConstructor]
         public Amount(decimal value, string currency)
             : this(value, Currency.FromCode(currency))
         {
