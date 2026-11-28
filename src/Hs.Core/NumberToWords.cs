@@ -9,6 +9,19 @@ namespace Hs.Core;
 /// </summary>
 public static class NumberToWords
 {
+    extension(decimal number)
+    {
+        /// <summary>Writes <paramref name="number"/> out in words in the language of the current culture.</summary>
+        public Words ToWords() => number.ToWords(CultureInfo.CurrentCulture);
+
+        /// <summary>
+        /// Writes <paramref name="number"/> out in words in the language of <paramref name="culture"/>,
+        /// e.g. <c>21</c> is "twenty-one" in en-AU and "eenentwintig" in nl-NL.
+        /// </summary>
+        public Words ToWords(CultureInfo culture) =>
+            new(Signed(number, LanguageOf(culture)));
+    }
+
     private static readonly ILanguage Fallback = new English();
 
     private static readonly Dictionary<string, ILanguage> Languages = new()
@@ -17,16 +30,6 @@ public static class NumberToWords
         ["nl"] = new Dutch(),
         ["ja"] = new Japanese(),
     };
-
-    /// <summary>Writes <paramref name="number"/> out in words in the language of the current culture.</summary>
-    public static Words ToWords(this decimal number) => number.ToWords(CultureInfo.CurrentCulture);
-
-    /// <summary>
-    /// Writes <paramref name="number"/> out in words in the language of <paramref name="culture"/>,
-    /// e.g. <c>21</c> is "twenty-one" in en-AU and "eenentwintig" in nl-NL.
-    /// </summary>
-    public static Words ToWords(this decimal number, CultureInfo culture) =>
-        new(Signed(number, LanguageOf(culture)));
 
     private static ILanguage LanguageOf(CultureInfo culture) =>
         Languages.GetValueOrDefault(culture.TwoLetterISOLanguageName, Fallback);

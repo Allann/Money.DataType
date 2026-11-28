@@ -10,15 +10,21 @@ public static class JsonExtensions
     private static readonly JsonSerializerOptions WithNulls = Options(JsonIgnoreCondition.Never);
     private static readonly JsonSerializerOptions WithoutNulls = Options(JsonIgnoreCondition.WhenWritingNull);
 
-    /// <summary>Serializes <paramref name="obj"/> to JSON, including null properties.</summary>
-    public static string ToJson<T>(this T obj) => ToJson(obj, includeNull: true);
+    extension<T>(T obj)
+    {
+        /// <summary>Serializes <paramref name="obj"/> to JSON, including null properties.</summary>
+        public string ToJson() => obj.ToJson(includeNull: true);
 
-    /// <summary>Serializes <paramref name="obj"/> to JSON, leaving out null properties unless <paramref name="includeNull"/>.</summary>
-    public static string ToJson<T>(this T obj, bool includeNull) => JsonSerializer.Serialize(obj, includeNull ? WithNulls : WithoutNulls);
+        /// <summary>Serializes <paramref name="obj"/> to JSON, leaving out null properties unless <paramref name="includeNull"/>.</summary>
+        public string ToJson(bool includeNull) => JsonSerializer.Serialize(obj, includeNull ? WithNulls : WithoutNulls);
+    }
 
-    /// <summary>Deserializes JSON into a <typeparamref name="T"/>.</summary>
-    /// <exception cref="JsonException">The JSON is invalid or doesn't match <typeparamref name="T"/>.</exception>
-    public static T? FromJson<T>(this string json) => JsonSerializer.Deserialize<T>(json, WithNulls);
+    extension(string json)
+    {
+        /// <summary>Deserializes JSON into a <typeparamref name="T"/>.</summary>
+        /// <exception cref="JsonException">The JSON is invalid or doesn't match <typeparamref name="T"/>.</exception>
+        public T? FromJson<T>() => JsonSerializer.Deserialize<T>(json, WithNulls);
+    }
 
     private static JsonSerializerOptions Options(JsonIgnoreCondition ignore) => new()
     {
