@@ -95,4 +95,24 @@ describe('Cheque', () => {
     await settle(defaultDelayMs)
     expect(asked).toEqual(['7.5 AUD nl-NL'])
   })
+
+  it('explains how to start the API when the development proxy returns 502', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: string | URL | Request) => {
+        const url = new URL(String(input), 'http://localhost')
+        return url.pathname === '/api/currencies'
+          ? Response.json(currencies)
+          : new Response('Bad Gateway', { status: 502 })
+      }),
+    )
+    const user = setup()
+    render(<Cheque />)
+    await settle()
+
+    await user.type(screen.getByLabelText(/amount in figures/i), '12')
+    await settle(defaultDelayMs)
+
+    expect(screen.getByText(/API isn't running.*Showcase: React app/i)).toBeInTheDocument()
+  })
 })

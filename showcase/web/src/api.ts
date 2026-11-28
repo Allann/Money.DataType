@@ -37,7 +37,11 @@ async function get<T>(path: string, query: Record<string, string>, signal?: Abor
   const response = await fetch(`/api/${path}${search ? `?${search}` : ''}`, { signal })
   if (!response.ok) {
     const problem = (await response.json().catch(() => null)) as { title?: string; errors?: Record<string, string[]> } | null
-    throw new ApiError(problem?.title ?? `The API answered ${response.status}.`, problem?.errors)
+    const message =
+      response.status === 502
+        ? "The API isn't running. In VS Code, choose 'Showcase: React app' to start the API and UI together."
+        : (problem?.title ?? `The API answered ${response.status}.`)
+    throw new ApiError(message, problem?.errors)
   }
   return (await response.json()) as T
 }

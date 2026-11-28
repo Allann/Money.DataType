@@ -85,9 +85,9 @@ dotnet run --project showcase/Hs.Showcase.Api   # the API, on http://localhost:5
 cd showcase/web && npm install && npm run dev    # the app, on http://localhost:5173
 ```
 
-In VS Code, choose **Showcase: Full stack** from Run and Debug to start the API and React app together.
-Choose **Showcase: API** to debug the API and open Scalar at `/scalar`, or **Showcase: React app** to run
-the front end on its own. Scalar lets you inspect and try the API operations. The React app proxies API
+In VS Code, choose **Showcase: React app** from Run and Debug to start the API and React app together.
+Choose **Showcase: API** to debug the API and open Scalar at `/scalar`, or **Showcase: React UI (API required)**
+to run the front end on its own. Scalar lets you inspect and try the API operations. The React app proxies API
 requests to `http://localhost:5080`, so start the API as well when you want to exercise its endpoints
 through the UI. Starting the API stops an existing
 Showcase API process on port 5080 before rebuilding, avoiding a file-lock or port-conflict failure.

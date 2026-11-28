@@ -21,7 +21,7 @@
       }
     },
     {
-      "name": "Showcase: React app",
+      "name": "Showcase: React UI (API required)",
       "type": "pwa-chrome",
       "request": "launch",
       "url": "http://localhost:5173",
@@ -31,10 +31,10 @@
   ],
   "compounds": [
     {
-      "name": "Showcase: Full stack",
+      "name": "Showcase: React app",
       "configurations": [
         "Showcase: API",
-        "Showcase: React app"
+        "Showcase: React UI (API required)"
       ],
       "stopAll": true
     }
