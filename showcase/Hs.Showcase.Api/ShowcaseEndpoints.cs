@@ -13,16 +13,42 @@ internal static class ShowcaseEndpoints
     {
         var api = app.MapGroup("/api");
 
-        api.MapGet("/languages", () => Catalogue.Languages);
-        api.MapGet("/currencies", () => Catalogue.ChequeCurrencies);
-        api.MapGet("/words", Words);
-        api.MapGet("/amount", Amount);
-        api.MapGet("/divide", Divide);
+        api.MapGet("/languages", () => Catalogue.Languages)
+            .WithName("GetLanguages")
+            .WithSummary("List the supported number-writing languages")
+            .WithDescription("Returns the languages available for converting numbers and money amounts to words, including each language's culture code.")
+            .Produces<IReadOnlyList<LanguageOption>>(StatusCodes.Status200OK);
+        api.MapGet("/currencies", () => Catalogue.ChequeCurrencies)
+            .WithName("GetCurrencies")
+            .WithSummary("List the currencies supported by the cheque showcase")
+            .WithDescription("Returns currency codes, names, symbols, and minor-unit details for currencies that can be written out as cheque amounts.")
+            .Produces<IReadOnlyList<CurrencyOption>>(StatusCodes.Status200OK);
+        api.MapGet("/words", Words)
+            .WithName("WriteNumberInWords")
+            .WithSummary("Write a number in words")
+            .WithDescription("Converts a decimal number to words in the selected language. The culture defaults to Australian English (en-AU).")
+            .Produces<NumberInWords>(StatusCodes.Status200OK)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
+        api.MapGet("/amount", Amount)
+            .WithName("WriteAmountInWords")
+            .WithSummary("Write a currency amount in figures and words")
+            .WithDescription("Rounds the amount to the currency's minor unit, then returns its invariant numeric value, culture-formatted figures, and words in the selected language. The culture defaults to Australian English (en-AU).")
+            .Produces<AmountInWords>(StatusCodes.Status200OK)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
+        api.MapGet("/divide", Divide)
+            .WithName("DivideAmountIntoShares")
+            .WithSummary("Divide a currency amount into exact shares")
+            .WithDescription("Splits an amount into the requested number of shares. Any remainder is distributed across shares so their sum equals the original amount.")
+            .Produces<Division>(StatusCodes.Status200OK)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         return app;
     }
 
-    /// <summary><c>GET /api/words?number=21&amp;culture=nl-NL</c>: "eenentwintig".</summary>
+    /// <summary>Converts a decimal number to words in the selected language.</summary>
+    /// <param name="number">The decimal number to convert, written using invariant-culture notation such as 1234.56.</param>
+    /// <param name="culture">The language culture code, such as nl-NL or ja-JP. Omit to use Australian English (en-AU).</param>
+    /// <returns>The input number in invariant notation and its words in the selected language.</returns>
     internal static Results<Ok<NumberInWords>, ValidationProblem> Words(string? number, string? culture)
     {
         var (parsed, language) = (Input.Number(number), Input.Culture(culture));
@@ -33,7 +59,11 @@ internal static class ShowcaseEndpoints
             : TypedResults.Ok(new NumberInWords(Invariant(parsed.Value), parsed.Value.ToWords(language.Value!).Value));
     }
 
-    /// <summary><c>GET /api/amount?value=1234.56&amp;currency=JPY&amp;culture=ja-JP</c>: 1235 JPY, "¥1,235", "千二百三十五円".</summary>
+    /// <summary>Rounds a currency amount to its minor unit and returns it in figures and words.</summary>
+    /// <param name="value">The decimal amount to convert, written using invariant-culture notation such as 1234.56.</param>
+    /// <param name="currency">The currency's ISO 4217 code, such as EUR or JPY. Codes are case-insensitive.</param>
+    /// <param name="culture">The language culture code, such as nl-NL or ja-JP. Omit to use Australian English (en-AU).</param>
+    /// <returns>The rounded amount, currency code, culture-formatted figures, and words in the selected language.</returns>
     internal static Results<Ok<AmountInWords>, ValidationProblem> Amount(string? value, string? currency, string? culture)
     {
         var (parsed, unit, language) = (Input.Number(value), Input.Currency(currency), Input.Culture(culture));
@@ -51,7 +81,11 @@ internal static class ShowcaseEndpoints
             amount.ToString("W", language.Value)));
     }
 
-    /// <summary><c>GET /api/divide?value=0.05&amp;currency=EUR&amp;shares=2</c>: 0.02 and 0.03, nothing lost.</summary>
+    /// <summary>Divides a currency amount into shares whose sum exactly matches the amount.</summary>
+    /// <param name="value">The decimal amount to divide, written using invariant-culture notation such as 0.05.</param>
+    /// <param name="currency">The currency's ISO 4217 code, such as EUR or JPY. Codes are case-insensitive.</param>
+    /// <param name="shares">The number of shares to create; must be between 2 and 100 inclusive.</param>
+    /// <returns>The rounded total, currency code, and invariant-formatted share values.</returns>
     internal static Results<Ok<Division>, ValidationProblem> Divide(string? value, string? currency, int? shares)
     {
         var (parsed, unit, count) = (Input.Number(value), Input.Currency(currency), Input.Shares(shares));

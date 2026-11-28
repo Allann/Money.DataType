@@ -32,6 +32,18 @@ public sealed class ShowcaseApiSpec(WebApplicationFactory<Program> factory) : IC
     }
 
     [Fact]
+    public async Task OpenApiDocumentsEndpointAndQueryParameterDescriptions()
+    {
+        using var document = await _client.GetFromJsonAsync<JsonDocument>("/openapi/v1.json", Cancellation);
+        var words = document!.RootElement.GetProperty("paths").GetProperty("/api/words").GetProperty("get");
+        var number = words.GetProperty("parameters").EnumerateArray()
+            .Single(parameter => parameter.GetProperty("name").GetString() == "number");
+
+        words.GetProperty("summary").GetString().Should().Be("Converts a decimal number to words in the selected language.");
+        number.GetProperty("description").GetString().Should().Contain("invariant-culture notation");
+    }
+
+    [Fact]
     public async Task TheLanguagesAreTheOnesHsCoreWrites()
     {
         var languages = await _client.GetFromJsonAsync<LanguageOption[]>("/api/languages", Cancellation);
