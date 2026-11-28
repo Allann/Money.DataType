@@ -41,8 +41,8 @@ internal static class AmountWords
         return parts.IsNegative ? language.Minus + words : words;
     }
 
-    private static string Count(decimal count, UnitName unit, MoneyLanguage language, CultureInfo culture) =>
-        $"{count.ToWords(culture)}{language.Space}{unit.For(count)}";
+    private static string Count(decimal unitCount, UnitName unit, MoneyLanguage language, CultureInfo culture) =>
+        $"{unitCount.ToWords(culture)}{language.Space}{unit.For(unitCount)}";
 
     private readonly record struct Parts(bool IsNegative, decimal Major, decimal Minor);
 }

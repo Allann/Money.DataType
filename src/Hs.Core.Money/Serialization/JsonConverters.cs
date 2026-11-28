@@ -29,6 +29,10 @@ public sealed class AmountJsonConverter : JsonConverter<Amount>
             {
                 currency = ReadAmountCurrency(property.Value);
             }
+            else
+            {
+                continue;
+            }
         }
 
         if (currency is null)

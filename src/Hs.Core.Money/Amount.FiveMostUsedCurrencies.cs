@@ -1,7 +1,8 @@
 namespace Hs.Core.Money;
 
 /// <summary>Represents Money, an amount defined in a specific Currency.</summary>
-public readonly partial record struct Amount
+// This partial keeps currency factory methods grouped in their own file.
+public readonly partial record struct Amount // NOSONAR
 {
     /// <summary>Initializes a new instance of the <see cref="Amount"/> structure in euro's.</summary>
     /// <param name="amount">The Amount of money in euro.</param>

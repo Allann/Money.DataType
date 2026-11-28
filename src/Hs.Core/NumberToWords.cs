@@ -45,7 +45,10 @@ public static class NumberToWords
 
     private static int[] FractionDigits(decimal fraction)
     {
-        if (fraction == 0) return [];
+        if (fraction == 0)
+        {
+            return [];
+        }
 
         var shifted = fraction * 10;
         var digit = decimal.Truncate(shifted);

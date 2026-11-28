@@ -3,7 +3,8 @@ using Hs.Core.Money.Wording;
 
 namespace Hs.Core.Money;
 
-public readonly partial record struct Amount
+// This partial keeps number-word members grouped in their own file.
+public readonly partial record struct Amount // NOSONAR
 {
     /// <summary>Writes this amount out in words in the language of the current culture, e.g. "five dollars and twenty cents".</summary>
     /// <remarks>Also available as the <c>"W"</c> format: <c>amount.ToString("W", culture)</c>.</remarks>

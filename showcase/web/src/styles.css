@@ -2,6 +2,7 @@
 
 :root {
   color-scheme: light;
+
   --bg: #f6f3eb;
   --surface: #fffdf8;
   --surface-2: #efe9dc;
@@ -23,7 +24,6 @@
   --paper-ink: #1f2b26;
   --paper-rule: #8a9a8f;
   --paper-tint: #d5e3d8;
-
   --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
   --sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
   --mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
@@ -33,6 +33,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
+
     --bg: #111513;
     --surface: #181e1b;
     --surface-2: #212925;
@@ -330,6 +331,18 @@ input[type='range'] {
   font: 600 1.4rem/1.25 var(--serif);
 }
 
+.adr span {
+  font: 600 0.7rem/1.4 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+}
+
+.box span {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
 .feature > span:not([class]) {
   color: var(--muted);
 }
@@ -538,6 +551,21 @@ input[type='range'] {
   cursor: pointer;
 }
 
+.cheque-pay label,
+.cheque-sum-label {
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.number-field label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.number-field input {
+  font-family: var(--mono);
+}
+
 .segmented label:has(input:focus-visible) {
   outline: 2px solid var(--accent);
 }
@@ -640,12 +668,6 @@ input[type='range'] {
   padding-right: clamp(0px, 32%, 280px);
 }
 
-.cheque-pay label,
-.cheque-sum-label {
-  font-size: 0.95rem;
-  white-space: nowrap;
-}
-
 .cheque input.cheque-line {
   border: 0;
   border-bottom: 1px solid var(--paper-rule);
@@ -686,6 +708,12 @@ input[type='range'] {
   color: var(--paper-ink);
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+.switch input {
+  accent-color: var(--accent);
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
 .cheque-amount input:focus-visible {
@@ -829,12 +857,6 @@ input[type='range'] {
   gap: 0.45rem;
   cursor: pointer;
   font-weight: 600;
-}
-
-.switch input {
-  accent-color: var(--accent);
-  width: 1.1rem;
-  height: 1.1rem;
 }
 
 .delay-range {
@@ -1051,13 +1073,6 @@ input[type='range'] {
   font-size: 0.93rem;
 }
 
-.adr span {
-  font: 600 0.7rem/1.4 var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--gold);
-}
-
 .demo {
   position: sticky;
   top: 1.2rem;
@@ -1234,15 +1249,6 @@ input[type='range'] {
 .number-field {
   display: grid;
   gap: 0.4rem;
-}
-
-.number-field label {
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.number-field input {
-  font-family: var(--mono);
 }
 
 .presets {
@@ -1470,11 +1476,6 @@ input[type='range'] {
 
 .box strong {
   font-size: 0.85rem;
-}
-
-.box span {
-  font-size: 0.75rem;
-  color: var(--muted);
 }
 
 .depends {

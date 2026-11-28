@@ -14,7 +14,7 @@ foreach ($listener in $listeners) {
     }
 
     Stop-Process -Id $listenerProcessId -Force
-    Write-Host "Stopped the previous Showcase API process ($listenerProcessId)."
+    Write-Output "Stopped the previous Showcase API process ($listenerProcessId)."
 }
 
 $timeout = [DateTime]::UtcNow.AddSeconds(5)

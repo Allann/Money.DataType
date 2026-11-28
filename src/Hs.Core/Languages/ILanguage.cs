@@ -7,10 +7,10 @@ namespace Hs.Core.Languages;
 internal interface ILanguage
 {
     /// <summary>Words a non-negative whole number, e.g. "one thousand and five".</summary>
-    string Whole(decimal whole);
+    string Whole(decimal number);
 
     /// <summary>Words a single digit after the decimal point.</summary>
-    string Digit(int digit);
+    string Digit(int digitValue);
 
     /// <summary>Words a negative number, given the words for its magnitude, e.g. "minus five".</summary>
     string Negative(string magnitude);

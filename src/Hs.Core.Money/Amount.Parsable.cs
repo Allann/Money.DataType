@@ -3,7 +3,8 @@ using System.Globalization;
 namespace Hs.Core.Money;
 
 /// <summary>Parsing an <see cref="Amount"/> from text such as "€ 765,43" or "USD 1,234.56".</summary>
-public readonly partial record struct Amount
+// This partial keeps parsing members grouped in their own file.
+public readonly partial record struct Amount // NOSONAR
 {
     /// <summary>The result of a failed TryParse: zero in XXX, ISO 4217's "no currency".</summary>
     private static readonly Amount None = new(0, Currency.FromCode(Currency.NoCurrency));

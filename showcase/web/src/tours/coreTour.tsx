@@ -180,7 +180,7 @@ export const coreTour: TourDefinition = {
           </p>
         </>
       ),
-      code: [{ spec: { file: core('Languages/Dutch.cs'), from: 'private static string Group(DigitGroup group)', to: '(Units[number % 10].EndsWith', highlight: ['{ Scale: 1, Value: 1 } => "duizend"', 'EndsWith'] } }],
+      code: [{ spec: { file: core('Languages/Dutch.cs'), from: 'private static string Group(DigitGroup digitGroup)', to: '(Units[number % 10].EndsWith', highlight: ['{ Scale: 1, Value: 1 } => "duizend"', 'EndsWith'] } }],
     },
     {
       id: 'japanese',
@@ -202,7 +202,7 @@ export const coreTour: TourDefinition = {
           </p>
         </>
       ),
-      code: [{ spec: { file: core('Languages/Japanese.cs'), from: 'public string Whole(decimal whole)', to: 'private static int Pow10', highlight: ['(1, _) => Places[place]', 'GroupSize'] } }],
+      code: [{ spec: { file: core('Languages/Japanese.cs'), from: 'public string Whole(decimal number)', to: 'private static int Pow10', highlight: ['(1, _) => Places[placeValue]', 'GroupSize'] } }],
     },
     {
       id: 'proof',

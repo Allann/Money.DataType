@@ -17,14 +17,14 @@ internal sealed class Japanese : ILanguage
     // Powers of 万 (10⁴), up to 穣 (10²⁸), which covers decimal.MaxValue.
     private static readonly string[] Scales = ["", "万", "億", "兆", "京", "垓", "秭", "穣"];
 
-    public string Digit(int digit) => Digits[digit];
+    public string Digit(int digitValue) => Digits[digitValue];
 
     public string Negative(string magnitude) => $"マイナス{magnitude}";
 
     public string WithFraction(string whole, IEnumerable<string> digits) => $"{whole}点{string.Concat(digits)}";
 
-    public string Whole(decimal whole) =>
-        DigitGroup.Split(whole, GroupSize) switch
+    public string Whole(decimal number) =>
+        DigitGroup.Split(number, GroupSize) switch
         {
             [] => Digits[0],
             var groups => string.Concat(groups.Select(group => InWords(group.Value) + Scales[group.Scale])),
@@ -34,12 +34,12 @@ internal sealed class Japanese : ILanguage
     private static string InWords(int value) =>
         string.Concat(Enumerable.Range(0, Places.Length).Reverse().Select(place => Place(value / Pow10(place) % 10, place)));
 
-    private static string Place(int digit, int place) => (digit, place) switch
+    private static string Place(int digitValue, int placeValue) => (digitValue, placeValue) switch
     {
         (0, _) => "",
-        (_, 0) => Digits[digit],
-        (1, _) => Places[place],
-        _ => Digits[digit] + Places[place],
+        (_, 0) => Digits[digitValue],
+        (1, _) => Places[placeValue],
+        _ => Digits[digitValue] + Places[placeValue],
     };
 
     private static int Pow10(int exponent) => exponent switch { 0 => 1, 1 => 10, 2 => 100, _ => 1000 };

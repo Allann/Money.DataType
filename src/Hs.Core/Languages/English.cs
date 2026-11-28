@@ -15,13 +15,13 @@ internal sealed class English : ILanguage
     private static readonly string[] Scales =
         ["", "thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion"];
 
-    public string Digit(int digit) => Units[digit];
+    public string Digit(int digitValue) => Units[digitValue];
 
     public string Negative(string magnitude) => $"minus {magnitude}";
 
     public string WithFraction(string whole, IEnumerable<string> digits) => $"{whole} point {string.Join(" ", digits)}";
 
-    public string Whole(decimal whole) => Whole(DigitGroup.Split(whole, 1000));
+    public string Whole(decimal number) => Whole(DigitGroup.Split(number, 1000));
 
     private static string Whole(DigitGroup[] groups) => groups switch
     {
@@ -32,8 +32,8 @@ internal sealed class English : ILanguage
 
     private static string Join(IEnumerable<DigitGroup> groups) => string.Join(" ", groups.Select(Group));
 
-    private static string Group(DigitGroup group) =>
-        group.Scale == 0 ? InWords(group) : $"{InWords(group)} {Scales[group.Scale]}";
+    private static string Group(DigitGroup digitGroup) =>
+        digitGroup.Scale == 0 ? InWords(digitGroup) : $"{InWords(digitGroup)} {Scales[digitGroup.Scale]}";
 
     private static string InWords(DigitGroup group) => (group.Hundreds, group.Remainder) switch
     {

@@ -20,14 +20,18 @@ public sealed class AmountTypeConverter : TypeConverter
     /// <inheritdoc />
     /// <exception cref="FormatException">The text isn't a number followed by a currency code.</exception>
     /// <exception cref="ArgumentException">The currency code isn't known.</exception>
-    public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value) =>
-        value is string text
-            ? text.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) switch
-            {
-                [var number, var code] => new Amount(decimal.Parse(number, NumberStyles.Number, culture ?? CultureInfo.InvariantCulture), code),
-                _ => throw new FormatException($"'{text}' is not an amount followed by a currency code, such as '1234.56 EUR'."),
-            }
-            : base.ConvertFrom(context, culture, value);
+    public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+    {
+        if (value is not string text)
+        {
+            return base.ConvertFrom(context, culture, value);
+        }
+
+        var parts = text.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return parts.Length == 2
+            ? new Amount(decimal.Parse(parts[0], NumberStyles.Number, culture ?? CultureInfo.InvariantCulture), parts[1])
+            : throw new FormatException($"'{text}' is not an amount followed by a currency code, such as '1234.56 EUR'.");
+    }
 
     /// <inheritdoc />
     public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType) =>

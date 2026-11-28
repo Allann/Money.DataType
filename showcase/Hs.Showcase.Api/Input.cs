@@ -40,9 +40,9 @@ internal static class Input
             .DefaultIfEmpty(Parsed<Currency>.Fail($"'{code}' isn't a known currency code, e.g. EUR."))
             .First();
 
-    public static Parsed<int> Shares(int? shares) =>
-        shares is >= 2 and <= MaxShares
-            ? Parsed<int>.Ok(shares.Value)
+    public static Parsed<int> Shares(int? shareCount) =>
+        shareCount is >= 2 and <= MaxShares
+            ? Parsed<int>.Ok(shareCount.Value)
             : Parsed<int>.Fail($"Shares must be from 2 to {MaxShares}.");
 
     /// <summary>The errors among <paramref name="checks"/>, by parameter name, as a validation problem wants them.</summary>

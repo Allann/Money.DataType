@@ -257,7 +257,7 @@ export const moneyTour: TourDefinition = {
         </>
       ),
       code: [
-        { spec: { file: money('Wording/AmountWords.cs'), from: 'public static Words Write(Amount amount, CultureInfo culture)', to: 'private readonly record struct Parts', highlight: ['count.ToWords(culture)'] } },
+        { spec: { file: money('Wording/AmountWords.cs'), from: 'public static Words Write(Amount amount, CultureInfo culture)', to: 'private readonly record struct Parts', highlight: ['unitCount.ToWords(culture)'] } },
         { spec: { file: money('Wording/MoneyLanguage.cs'), from: '// Japanese doesn', to: '}));', withoutDocs: true } },
       ],
     },

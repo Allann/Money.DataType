@@ -11,7 +11,8 @@ namespace Hs.Core.Money;
 /// </remarks>
 [JsonConverter(typeof(AmountJsonConverter))]
 [TypeConverter(typeof(AmountTypeConverter))]
-public readonly partial record struct Amount
+// The partial type keeps its public API grouped by concern across files.
+public readonly partial record struct Amount // NOSONAR
 {
     /// <summary>Initializes a new instance of the <see cref="Amount"/> struct, based on the current culture.</summary>
     /// <param name="value">The Amount of money as <see langword="decimal"/>.</param>
