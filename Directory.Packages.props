@@ -13,6 +13,11 @@
     <PackageVersion Include="xunit.v3" Version="4.0.3" />
   </ItemGroup>
 
+  <ItemGroup Label="Showcase API">
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="3.3.0" />
+  </ItemGroup>
+
   <ItemGroup Label="Benchmarks">
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
   </ItemGroup>

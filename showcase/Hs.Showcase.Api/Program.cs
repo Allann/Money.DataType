@@ -1,7 +1,9 @@
 using Hs.Showcase.Api;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProblemDetails();
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
@@ -11,6 +13,12 @@ app.UseStatusCodePages();
 // The React app, built into wwwroot by `npm run build` in showcase/web.
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
 
 app.MapShowcase();
 

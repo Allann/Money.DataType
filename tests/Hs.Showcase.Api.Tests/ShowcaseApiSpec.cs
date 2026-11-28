@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 
@@ -11,6 +12,24 @@ public sealed class ShowcaseApiSpec(WebApplicationFactory<Program> factory) : IC
     private readonly HttpClient _client = factory.CreateClient();
 
     private static CancellationToken Cancellation => TestContext.Current.CancellationToken;
+
+    [Fact]
+    public async Task ScalarApiReferenceIsAvailableInDevelopment()
+    {
+        var response = await _client.GetAsync("/scalar", Cancellation);
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async Task OpenApiDocumentListsTheShowcaseEndpoints()
+    {
+        using var document = await _client.GetFromJsonAsync<JsonDocument>("/openapi/v1.json", Cancellation);
+        var paths = document!.RootElement.GetProperty("paths");
+
+        paths.EnumerateObject().Select(path => path.Name).Should().Contain(
+            ["/api/languages", "/api/currencies", "/api/words", "/api/amount", "/api/divide"]);
+    }
 
     [Fact]
     public async Task TheLanguagesAreTheOnesHsCoreWrites()
