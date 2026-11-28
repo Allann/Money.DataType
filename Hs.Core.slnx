@@ -14,9 +14,14 @@
     <Project Path="src/Hs.Core/Hs.Core.csproj" />
     <Project Path="src/Hs.Core.Money/Hs.Core.Money.csproj" />
   </Folder>
+  <Folder Name="/showcase/">
+    <File Path="showcase/Directory.Build.props" />
+    <Project Path="showcase/Hs.Showcase.Api/Hs.Showcase.Api.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <File Path="tests/Directory.Build.props" />
     <Project Path="tests/Hs.Core.Tests/Hs.Core.Tests.csproj" />
     <Project Path="tests/Hs.Core.Money.Tests/Hs.Core.Money.Tests.csproj" />
+    <Project Path="tests/Hs.Showcase.Api.Tests/Hs.Showcase.Api.Tests.csproj" />
   </Folder>
 </Solution>

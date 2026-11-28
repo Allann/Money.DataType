@@ -66,6 +66,28 @@ The decisions that shape the libraries, and what they cost, are recorded as [ADR
 The ISO 4217 currency table is checked against a snapshot of the official list, so a currency that's
 missing, withdrawn or has the wrong number or minor units fails the build.
 
+## Showcase
+
+A React front end over the libraries, in [showcase/](showcase/):
+
+- **A code tour of Hs.Core**: how a number becomes words, from the extension method to three grammars.
+- **A cheque that writes itself**: type an amount and it's written out in words in English, Dutch or Japanese,
+  with a keystroke delay so it asks only when you pause.
+- **An architecture tour of Hs.Core.Money**: amounts, minor units, the registry, lossless division,
+  formatting, JSON and the decisions behind them.
+
+The tours quote the real source files at build time, and a test fails if an excerpt no longer matches the code.
+The front end calls [Hs.Showcase.Api](showcase/Hs.Showcase.Api/), a minimal ASP.NET Core API that checks its
+input and returns JSON; it holds no money logic of its own.
+
+```bash
+dotnet run --project showcase/Hs.Showcase.Api   # the API, on http://localhost:5080
+cd showcase/web && npm install && npm run dev    # the app, on http://localhost:5173
+```
+
+Or `npm run build` in `showcase/web`, which builds the app into the API's `wwwroot`, so the API serves both on
+port 5080. Requires Node 24.
+
 ## Project layout
 
 ```text
@@ -73,6 +95,9 @@ src/Hs.Core                 number to words (English, Dutch, Japanese)
 src/Hs.Core.Money           Amount, Currency, ExchangeRate, formatting, parsing, JSON, words
 tests/Hs.Core.Tests         unit and property-based tests
 tests/Hs.Core.Money.Tests   unit, property-based and ISO 4217 conformance tests
+showcase/Hs.Showcase.Api    minimal API over the libraries, serving the web app
+showcase/web                React front end: code tours and the cheque
+tests/Hs.Showcase.Api.Tests API tests through ASP.NET Core's pipeline
 benchmarks/                 BenchmarkDotNet benchmarks
 docs/adr/                   architecture decision records
 ```
@@ -87,7 +112,7 @@ dotnet test --solution Hs.Core.slnx       # xunit v3 on Microsoft.Testing.Platfo
 dotnet test --solution Hs.Core.slnx --coverlet --coverlet-output-format cobertura   # with coverage
 ```
 
-The test suite has about 670 tests, including [CsCheck](https://github.com/AnthonyLloyd/CsCheck) properties: for any
+The .NET suite has about 680 tests, including [CsCheck](https://github.com/AnthonyLloyd/CsCheck) properties: for any
 generated amount, dividing never loses money, arithmetic obeys its laws, and formatting, JSON and type conversion
 round-trip. Line coverage is 100% for Hs.Core and 97% across Hs.Core.Money's suite. CI builds and tests on Linux
 and Windows, publishes a coverage summary and the NuGet packages, and runs CodeQL.

@@ -58,3 +58,29 @@ jobs:
         with:
           name: packages
           path: packages/*.nupkg
+
+  web:
+    name: Showcase web app
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: showcase/web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: showcase/web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      # Includes a check that every code excerpt in the tours still matches the C# source.
+      - name: Test
+        run: npm test
+
+      - name: Type-check and build
+        run: npm run build
