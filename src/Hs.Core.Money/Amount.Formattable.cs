@@ -16,8 +16,7 @@ namespace Hs.Core.Money;
 /// <item><term>anything else</term><description>A standard or custom numeric format applied to the value, e.g. "N2".</description></item>
 /// </list>
 /// </remarks>
-// This partial keeps formatting members grouped in their own file.
-public readonly partial record struct Amount : IFormattable // NOSONAR
+public readonly partial record struct Amount : IFormattable
 {
     // NumberFormatInfo currency patterns, with a space between the code and the number for the "I" format.
     // Positive: $n → $ n, n$ → n $.  Negative: ($n) → ($ n), -$n → -$ n, and so on; patterns 8-16 already have a space.

@@ -5,8 +5,7 @@ namespace Hs.Core.Money;
 /// Conversions from a number to an <see cref="Amount"/> use the currency of the current culture,
 /// see <see cref="Currency.CurrentCurrency"/>. Conversions to a number drop the <see cref="Currency"/>.
 /// </remarks>
-// This partial keeps conversions grouped in their own file.
-public readonly partial record struct Amount // NOSONAR
+public readonly partial record struct Amount
 {
     /// <summary>Converts to a <see cref="double"/>, which may lose precision and drops the currency.</summary>
     public static explicit operator double(Amount money) => (double)money.Value;

@@ -31,7 +31,7 @@ public sealed class AmountJsonConverter : JsonConverter<Amount>
             }
             else
             {
-                continue;
+                // Ignore unknown properties for forward-compatible JSON.
             }
         }
 

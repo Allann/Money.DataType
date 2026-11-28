@@ -1,8 +1,7 @@
 namespace Hs.Core.Money;
 
 /// <summary>Represents Money, an amount defined in a specific Currency.</summary>
-// This partial keeps comparison members grouped in their own file.
-public readonly partial record struct Amount : IComparable, IComparable<Amount> // NOSONAR
+public readonly partial record struct Amount : IComparable, IComparable<Amount>
 {
     /// <summary>Returns a value indicating whether a specified <see cref="Amount"/> is less than another specified <see cref="Amount"/>.</summary>
     /// <param name="left">A <see cref="Amount"/> object on the left side.</param>

@@ -1,8 +1,7 @@
 namespace Hs.Core.Money;
 
 /// <summary>Represents Money, an amount defined in a specific Currency.</summary>
-// This partial keeps operators grouped in their own file.
-public readonly partial record struct Amount // NOSONAR
+public readonly partial record struct Amount
 {
     /// <summary>Adds two specified <see cref="Amount"/> values.</summary>
     /// <param name="left">A <see cref="Amount"/> object on the left side.</param>
