@@ -1,0 +1,8 @@
+[*.cs]
+# Test names are sentences: WhenSomething_ThenSomethingElse.
+dotnet_diagnostic.CA1707.severity = none
+# Tests set the thread culture deliberately (UseCulture) and format against it.
+dotnet_diagnostic.CA1305.severity = none
+dotnet_diagnostic.CA1304.severity = none
+# `Action act = () => new Thing(bad)` constructs an object only to assert that it throws.
+dotnet_diagnostic.CA1806.severity = none

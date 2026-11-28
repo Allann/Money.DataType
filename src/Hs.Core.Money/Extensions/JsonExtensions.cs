@@ -1,66 +1,30 @@
-﻿using System.Diagnostics;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace Hs.Core.Money.Extensions
+namespace Hs.Core.Money.Extensions;
+
+/// <summary>JSON helpers using System.Text.Json with camelCase names and case-insensitive reading.</summary>
+public static class JsonExtensions
 {
-    /// <summary>
-    /// Extension methods used for Json Serialization
-    /// </summary>
-    public static class JsonExtensions
+    // Options are immutable once used, and building them per call allocates and re-checks the metadata cache; share them.
+    private static readonly JsonSerializerOptions WithNulls = Options(JsonIgnoreCondition.Never);
+    private static readonly JsonSerializerOptions WithoutNulls = Options(JsonIgnoreCondition.WhenWritingNull);
+
+    /// <summary>Serializes <paramref name="obj"/> to JSON, including null properties.</summary>
+    public static string ToJson<T>(this T obj) => ToJson(obj, includeNull: true);
+
+    /// <summary>Serializes <paramref name="obj"/> to JSON, leaving out null properties unless <paramref name="includeNull"/>.</summary>
+    public static string ToJson<T>(this T obj, bool includeNull) => JsonSerializer.Serialize(obj, includeNull ? WithNulls : WithoutNulls);
+
+    /// <summary>Deserializes JSON into a <typeparamref name="T"/>.</summary>
+    /// <exception cref="JsonException">The JSON is invalid or doesn't match <typeparamref name="T"/>.</exception>
+    public static T? FromJson<T>(this string json) => JsonSerializer.Deserialize<T>(json, WithNulls);
+
+    private static JsonSerializerOptions Options(JsonIgnoreCondition ignore) => new()
     {
-        private static JsonSerializerSettings GetSettings(bool includeNull = true)
-        {
-            return new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = includeNull ? NullValueHandling.Include : NullValueHandling.Ignore,
-                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
-            };
-        }
-
-        /// <summary>
-        /// Serialize object into a valid Json string using NewtonSoft.Json
-        /// </summary>
-        /// <typeparam name="T">Type of object to serialize</typeparam>
-        /// <param name="obj">Object being serialized</param>
-        /// <param name="includeNull">Flag to determine if null properties will be serialized</param>
-        /// <returns>Json string representation of the object</returns>
-        public static string ToJson<T>(this T obj)            
-        {
-            return ToJson(obj, true);
-        }
-
-        /// <summary>
-        /// Serialize object into a valid Json string using NewtonSoft.Json
-        /// </summary>
-        /// <typeparam name="T">Type of object to serialize</typeparam>
-        /// <param name="obj">Object being serialized</param>
-        /// <param name="includeNull">Flag to determine if null properties will be serialized</param>
-        /// <returns>Json string representation of the object</returns>
-        public static string ToJson<T>(this T obj, bool includeNull)
-        {
-            var settings = GetSettings(includeNull);
-            return JsonConvert.SerializeObject(obj, settings);
-        }
-
-        /// <summary>
-        /// Deserialize a valid json string into it object type
-        /// </summary>
-        /// <typeparam name="T">Type of object to serialize</typeparam>
-        /// <param name="json">Json string representing the object</param>
-        /// <returns>Object of the type specified</returns>
-        public static T? FromJson<T>(this string json)
-        {
-            ITraceWriter traceWriter = new MemoryTraceWriter();
-            var settings = GetSettings();
-            settings.TraceWriter = traceWriter;
-            
-            var data = JsonConvert.DeserializeObject<T>(json, settings);
-            Debug.WriteLine(traceWriter);
-
-            return data;
-        }
-    }
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true,
+        DefaultIgnoreCondition = ignore,
+    };
 }

@@ -3,7 +3,8 @@
 project.lock.json
 .DS_Store
 *.pyc
-.vscode
+.vscode/*
+!.vscode/settings.json
 
 # User-specific files
 *.suo
@@ -36,3 +37,5 @@ node_modules/
 dist/
 TestResults/
 coverage.opencover.xml
+# BenchmarkDotNet
+BenchmarkDotNet.Artifacts/
