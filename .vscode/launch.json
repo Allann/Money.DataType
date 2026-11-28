@@ -5,7 +5,7 @@
       "name": "Showcase: API",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "build showcase API",
+      "preLaunchTask": "prepare showcase API",
       "program": "${workspaceFolder}/showcase/Hs.Showcase.Api/bin/Debug/net10.0/Hs.Showcase.Api.dll",
       "args": [],
       "cwd": "${workspaceFolder}/showcase/Hs.Showcase.Api",

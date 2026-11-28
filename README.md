@@ -88,7 +88,8 @@ cd showcase/web && npm install && npm run dev    # the app, on http://localhost:
 In VS Code, choose **Showcase: Full stack** from Run and Debug to start the API and React app together.
 Choose **Showcase: API** to debug the API and open `/api/languages`, or **Showcase: React app** to run
 the front end on its own. The React app proxies API requests to `http://localhost:5080`, so start the
-API as well when you want to exercise its endpoints through the UI.
+API as well when you want to exercise its endpoints through the UI. Starting the API stops an existing
+Showcase API process on port 5080 before rebuilding, avoiding a file-lock or port-conflict failure.
 
 Or `npm run build` in `showcase/web`, which builds the app into the API's `wwwroot`, so the API serves both on
 port 5080. Requires Node 24.
